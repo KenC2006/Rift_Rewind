@@ -1,0 +1,139 @@
+.insights-panel {
+  max-width: 1000px;
+  margin: 60px auto 80px;
+  padding: 0 20px;
+}
+
+.ai-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 900;
+  padding: 8px 16px;
+  border-radius: 8px;
+  margin-right: 15px;
+  letter-spacing: 2px;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.insights-content {
+  position: relative;
+  background: rgba(10, 20, 40, 0.6);
+  border: 2px solid rgba(200, 155, 60, 0.3);
+  border-radius: 16px;
+  padding: 50px 40px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  animation: fadeIn 1s ease-out;
+}
+
+.insights-decoration-top,
+.insights-decoration-bottom {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 2px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    #c89b3c 50%,
+    transparent 100%
+  );
+}
+
+.insights-decoration-top {
+  top: 0;
+}
+
+.insights-decoration-bottom {
+  bottom: 60px;
+}
+
+.insight-paragraph {
+  margin-bottom: 30px;
+  animation: fadeInUp 0.8s ease-out forwards;
+  opacity: 0;
+}
+
+.insight-line {
+  font-size: 1.15rem;
+  line-height: 1.8;
+  color: #e8e8e8;
+  margin: 15px 0;
+  text-align: justify;
+}
+
+.insight-line:empty {
+  display: none;
+}
+
+/* Style headers in insights */
+.insight-line:first-child {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #c89b3c;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.powered-by {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 40px;
+  padding-top: 20px;
+  font-size: 0.9rem;
+  color: #785a28;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.ai-icon {
+  font-size: 1.5rem;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .insights-content {
+    padding: 40px 25px;
+  }
+
+  .insight-line {
+    font-size: 1rem;
+    text-align: left;
+  }
+
+  .insight-line:first-child {
+    font-size: 1.2rem;
+  }
+}
