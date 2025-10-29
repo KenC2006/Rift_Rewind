@@ -99,7 +99,22 @@ def analyze_player():
         puuid = summoner['puuid']
         display_name = f"{summoner['gameName']}#{summoner['tagLine']}"
 
-        # Step 2: Fetch match history
+        # Step 2: Fetch ranked information (if summoner ID available)
+        solo_rank = None
+        summoner_id = summoner.get('id')
+        if summoner_id:
+            try:
+                ranked_info = riot_client.get_ranked_info(summoner_id)
+                if ranked_info:
+                    for queue in ranked_info:
+                        if queue.get('queueType') == 'RANKED_SOLO_5x5':
+                            solo_rank = queue
+                            break
+            except Exception as e:
+                print(f"Could not fetch ranked info: {e}")
+                # Continue without rank info
+
+        # Step 3: Fetch match history
         matches = riot_client.get_full_year_matches(puuid)
 
         if not matches:
@@ -108,23 +123,35 @@ def analyze_player():
                 'error': 'No matches found for this player in the past year'
             }), 404
 
-        # Step 3: Process statistics
+        # Step 4: Process statistics
         stats = MatchDataProcessor.extract_player_stats(matches, puuid)
 
-        # Step 4: Generate AI insights
-        prompt = InsightGenerator.create_year_in_review_prompt(stats, display_name)
-        insights = bedrock_client.generate_insights(prompt)
+        # Step 5: Generate AI coaching insights with rank-aware analysis
+        prompt = InsightGenerator.create_year_in_review_prompt(stats, display_name, solo_rank)
+        insights = bedrock_client.generate_insights(prompt, max_tokens=8000)  # Increased to ensure all 8 sections are complete
 
-        # Return everything
+        # Return everything including rank info
+        player_data = {
+            'gameName': summoner['gameName'],
+            'tagLine': summoner['tagLine'],
+            'summonerLevel': summoner['summonerLevel'],
+            'profileIconId': summoner.get('profileIconId', 0)
+        }
+        
+        # Add rank info if available
+        if solo_rank:
+            player_data['rank'] = {
+                'tier': solo_rank.get('tier'),
+                'division': solo_rank.get('rank'),
+                'lp': solo_rank.get('leaguePoints'),
+                'wins': solo_rank.get('wins'),
+                'losses': solo_rank.get('losses')
+            }
+        
         return jsonify({
             'success': True,
             'data': {
-                'player': {
-                    'gameName': summoner['gameName'],
-                    'tagLine': summoner['tagLine'],
-                    'summonerLevel': summoner['summonerLevel'],
-                    'profileIconId': summoner.get('profileIconId', 0)
-                },
+                'player': player_data,
                 'stats': stats,
                 'insights': insights
             }
