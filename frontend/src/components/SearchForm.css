@@ -1,72 +1,66 @@
-.search-container {
-  text-align: center;
-  padding: 60px 20px;
-  background: linear-gradient(135deg, #0a1428 0%, #1a1f3a 100%);
-  border-bottom: 2px solid rgba(200, 155, 60, 0.3);
-}
-
-.search-header {
-  margin-bottom: 40px;
-}
-
-.logo {
-  font-size: 4rem;
-  font-weight: 900;
-  margin: 0 0 10px 0;
-  letter-spacing: 4px;
-  text-transform: uppercase;
-}
-
-.rift {
-  color: #fff;
-  text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
-}
-
-.rewind {
-  color: #c89b3c;
-  text-shadow: 0 0 30px rgba(200, 155, 60, 0.8);
-  margin-left: 15px;
-}
-
-.tagline {
-  font-size: 1.2rem;
-  color: #a09b8c;
-  font-weight: 300;
-  letter-spacing: 2px;
-}
-
 .search-form {
-  max-width: 600px;
-  margin: 0 auto;
+  width: 100%;
 }
 
-.input-wrapper {
+.input-group {
   display: flex;
-  gap: 10px;
-  margin-bottom: 15px;
+  align-items: center;
+  background: rgba(10, 20, 40, 0.6);
+  border: 1px solid rgba(200, 155, 60, 0.2);
+  border-radius: 12px;
+  padding: 0.5rem;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.input-group::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(200, 155, 60, 0.05), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+}
+
+.input-group:focus-within::before {
+  transform: translateX(100%);
+}
+
+.input-group:focus-within {
+  border-color: rgba(200, 155, 60, 0.5);
+  box-shadow: 0 0 0 3px rgba(200, 155, 60, 0.1);
+  background: rgba(10, 20, 40, 0.8);
+}
+
+.input-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 1rem;
+  color: #6B6B6B;
+  transition: color 0.3s ease;
+  flex-shrink: 0;
+}
+
+.input-group:focus-within .input-icon {
+  color: #C89B3C;
 }
 
 .search-input {
   flex: 1;
-  padding: 18px 24px;
-  font-size: 1.1rem;
-  background: rgba(10, 20, 40, 0.8);
-  border: 2px solid rgba(200, 155, 60, 0.3);
-  border-radius: 8px;
+  padding: 1rem 0.5rem;
+  font-size: 1rem;
+  background: transparent;
+  border: none;
   color: #fff;
   font-family: inherit;
-  transition: all 0.3s ease;
-}
-
-.search-input:focus {
   outline: none;
-  border-color: #c89b3c;
-  box-shadow: 0 0 20px rgba(200, 155, 60, 0.3);
-  background: rgba(10, 20, 40, 0.95);
+  min-width: 0;
 }
 
 .search-input::placeholder {
-  color: #5b5a56;
+  color: #6B6B6B;
 }
 
 .search-input:disabled {
@@ -74,52 +68,84 @@
   cursor: not-allowed;
 }
 
-.search-button {
-  padding: 18px 40px;
-  font-size: 1.1rem;
-  font-weight: 700;
-  background: linear-gradient(135deg, #c89b3c 0%, #f0e6d2 100%);
-  color: #0a1428;
+.search-submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, #C89B3C 0%, #F0E6D2 100%);
   border: none;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  box-shadow: 0 4px 15px rgba(200, 155, 60, 0.4);
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
 }
 
-.search-button:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 25px rgba(200, 155, 60, 0.6);
+.search-submit::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent, rgba(255, 255, 255, 0.2));
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
-.search-button:active:not(:disabled) {
-  transform: translateY(0);
+.search-submit:hover:not(:disabled)::before {
+  opacity: 1;
 }
 
-.search-button:disabled {
-  opacity: 0.6;
+.search-submit:hover:not(:disabled) {
+  transform: scale(1.05);
+  box-shadow: 0 4px 16px rgba(200, 155, 60, 0.4);
+}
+
+.search-submit:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.search-submit:disabled {
+  opacity: 0.5;
   cursor: not-allowed;
-  transform: none;
 }
 
-.hint {
-  color: #785a28;
-  font-size: 0.9rem;
-  margin-top: 10px;
+.search-submit svg {
+  color: #0A1428;
+  z-index: 1;
 }
 
-@media (max-width: 768px) {
-  .logo {
-    font-size: 2.5rem;
+.loading-spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(10, 20, 40, 0.3);
+  border-top-color: #0A1428;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 640px) {
+  .input-group {
+    padding: 0.4rem;
   }
 
-  .input-wrapper {
-    flex-direction: column;
+  .search-input {
+    font-size: 0.95rem;
   }
 
-  .search-button {
-    width: 100%;
+  .input-icon {
+    padding: 0 0.75rem;
+  }
+
+  .search-submit {
+    width: 45px;
+    height: 45px;
   }
 }
