@@ -7,7 +7,7 @@ import Loading from './components/Loading';
 import PlayerCard from './components/PlayerCard';
 import StatsOverview from './components/StatsOverview';
 import ChampionGrid from './components/ChampionGrid';
-import InsightsPanel from './components/InsightsPanel';
+import EnhancedInsightsPanel from './components/EnhancedInsightsPanel';
 import VisualizationDashboard from './components/VisualizationDashboard';
 
 // API Service
@@ -71,7 +71,7 @@ function App() {
           <StatsOverview stats={data.stats} />
           <VisualizationDashboard stats={data.stats} />
           <ChampionGrid champions={data.stats.champions_played} />
-          <InsightsPanel insights={data.insights} />
+          <EnhancedInsightsPanel insights={data.insights} />
         </div>
       )}
 
