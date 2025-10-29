@@ -4,7 +4,6 @@ import './Stats.css';
 import PlayerCard from '../components/PlayerCard';
 import StatsOverview from '../components/StatsOverview';
 import ChampionGrid from '../components/ChampionGrid';
-import EnhancedInsightsPanel from '../components/EnhancedInsightsPanel';
 import VisualizationDashboard from '../components/VisualizationDashboard';
 import { usePlayer } from '../context/PlayerContext';
 
@@ -36,8 +35,8 @@ function Stats() {
   return (
     <div className="stats-page">
       <div className="stats-header">
-        <h2>Your 2024 League Journey</h2>
-        <p>Comprehensive performance analysis</p>
+        <h2>Performance Analysis</h2>
+        <p>Season statistics and insights</p>
       </div>
 
       <div className="results-container">
@@ -45,7 +44,6 @@ function Stats() {
         <StatsOverview stats={playerData.stats} />
         <VisualizationDashboard stats={playerData.stats} />
         <ChampionGrid champions={playerData.stats.champions_played} />
-        <EnhancedInsightsPanel insights={playerData.insights} />
       </div>
     </div>
   );

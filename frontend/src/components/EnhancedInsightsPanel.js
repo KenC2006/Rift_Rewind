@@ -13,17 +13,17 @@ const EnhancedInsightsPanel = ({ insights }) => {
     let currentSection = null;
     let currentContent = [];
 
-    // Section headers and their icons/colors
+    // Section headers and their colors
     const sectionConfig = {
-      'EXECUTIVE SUMMARY': { icon: '📋', color: '#00d4ff', priority: 'high' },
-      'STRENGTHS ANALYSIS': { icon: '💪', color: '#00c853', priority: 'high' },
-      'WEAKNESSES': { icon: '⚠️', color: '#ff9800', priority: 'high' },
-      'PRACTICE STRUCTURE': { icon: '🎯', color: '#9c27b0', priority: 'medium' },
-      'CHAMPION POOL': { icon: '🏆', color: '#e91e63', priority: 'high' },
-      'ROLE-SPECIFIC': { icon: '⚔️', color: '#f44336', priority: 'medium' },
-      'MACRO': { icon: '🗺️', color: '#2196f3', priority: 'high' },
-      'ROADMAP': { icon: '🛤️', color: '#4caf50', priority: 'high' },
-      'OBJECTIVES': { icon: '🎯', color: '#2196f3', priority: 'high' },
+      'EXECUTIVE SUMMARY': { color: '#4FC3F7', priority: 'high' },
+      'STRENGTHS ANALYSIS': { color: '#66BB6A', priority: 'high' },
+      'WEAKNESSES': { color: '#FFA726', priority: 'high' },
+      'PRACTICE STRUCTURE': { color: '#AB47BC', priority: 'medium' },
+      'CHAMPION POOL': { color: '#EC407A', priority: 'high' },
+      'ROLE-SPECIFIC': { color: '#EF5350', priority: 'medium' },
+      'MACRO': { color: '#42A5F5', priority: 'high' },
+      'ROADMAP': { color: '#66BB6A', priority: 'high' },
+      'OBJECTIVES': { color: '#42A5F5', priority: 'high' },
     };
 
     lines.forEach((line) => {
@@ -49,7 +49,6 @@ const EnhancedInsightsPanel = ({ insights }) => {
         // Start new section
         currentSection = {
           title: matchedHeader.name,
-          icon: matchedHeader.config.icon,
           color: matchedHeader.config.color,
           priority: matchedHeader.config.priority
         };
@@ -172,10 +171,7 @@ const EnhancedInsightsPanel = ({ insights }) => {
     <div className="enhanced-insights-panel">
       <div className="insights-header">
         <h2 className="insights-title">
-          <span className="ai-badge-enhanced">
-            <span className="ai-sparkle">✨</span>
-            AI Coach
-          </span>
+          <span className="ai-badge-enhanced">AI Coach</span>
           Your Personalized Analysis
         </h2>
         <p className="insights-subtitle">
@@ -196,9 +192,7 @@ const EnhancedInsightsPanel = ({ insights }) => {
               style={{ borderLeftColor: section.color }}
             >
               <div className="section-header-left">
-                <span className="section-icon" style={{ color: section.color }}>
-                  {section.icon}
-                </span>
+                <div className="section-indicator" style={{ backgroundColor: section.color }}></div>
                 <h3 className="section-title">{section.title}</h3>
               </div>
               <span className={`expand-icon ${expandedSections[index] ? 'expanded' : ''}`}>
@@ -225,7 +219,6 @@ const EnhancedInsightsPanel = ({ insights }) => {
 
       <div className="insights-footer">
         <div className="footer-tip">
-          <span className="tip-icon">💡</span>
           <span>Click any section to expand or collapse</span>
         </div>
       </div>

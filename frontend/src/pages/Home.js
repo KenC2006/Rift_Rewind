@@ -52,8 +52,8 @@ function Home() {
           </div>
 
           <h1 className="main-title">
-            Analyze Your
-            <span className="title-gradient"> League Journey</span>
+            Rift Rewind
+            <span className="title-gradient"> One Year Of League</span>
           </h1>
 
           <p className="hero-description">

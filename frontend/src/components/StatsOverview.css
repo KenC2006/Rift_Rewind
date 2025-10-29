@@ -5,14 +5,13 @@
 }
 
 .section-title {
-  font-size: 2.5rem;
-  font-weight: 900;
-  color: #c89b3c;
-  text-align: center;
-  margin-bottom: 40px;
-  text-transform: uppercase;
-  letter-spacing: 3px;
-  text-shadow: 0 2px 10px rgba(200, 155, 60, 0.5);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #C89B3C;
+  text-align: left;
+  margin-bottom: 24px;
+  text-transform: none;
+  letter-spacing: 0.5px;
 }
 
 .stats-grid {
@@ -24,98 +23,95 @@
 
 .stat-card {
   display: flex;
-  align-items: center;
-  gap: 20px;
-  padding: 30px;
-  background: rgba(10, 20, 40, 0.6);
-  border: 2px solid rgba(200, 155, 60, 0.2);
-  border-radius: 12px;
-  transition: all 0.3s ease;
-  animation: fadeInUp 0.6s ease-out forwards;
+  flex-direction: column;
+  padding: 24px;
+  background: rgba(15, 25, 45, 0.4);
+  border: 1px solid rgba(200, 155, 60, 0.15);
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  animation: fadeInUp 0.4s ease-out forwards;
   opacity: 0;
 }
 
 .stat-card:hover {
-  transform: translateY(-5px);
-  border-color: rgba(200, 155, 60, 0.5);
-  box-shadow: 0 8px 30px rgba(200, 155, 60, 0.2);
-}
-
-.stat-icon {
-  font-size: 3rem;
+  border-color: rgba(200, 155, 60, 0.3);
+  background: rgba(15, 25, 45, 0.6);
 }
 
 .stat-content {
-  flex: 1;
-}
-
-.stat-value {
-  font-size: 2.5rem;
-  font-weight: 900;
-  line-height: 1;
-  margin-bottom: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .stat-label {
-  font-size: 1rem;
-  color: #a09b8c;
+  font-size: 0.85rem;
+  color: #8A8A8A;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  font-weight: 600;
+  letter-spacing: 0.5px;
+  font-weight: 500;
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
 }
 
 .stat-subtitle {
-  font-size: 0.9rem;
-  color: #785a28;
-  margin-top: 5px;
+  font-size: 0.875rem;
+  color: #6B6B6B;
+  margin-top: 4px;
+  font-weight: 400;
 }
 
 .win-rate-bar {
-  padding: 30px;
-  background: rgba(10, 20, 40, 0.6);
-  border: 2px solid rgba(200, 155, 60, 0.2);
-  border-radius: 12px;
-  animation: fadeInUp 0.8s ease-out;
+  padding: 24px;
+  background: rgba(15, 25, 45, 0.4);
+  border: 1px solid rgba(200, 155, 60, 0.15);
+  border-radius: 8px;
+  animation: fadeInUp 0.5s ease-out;
 }
 
 .bar-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 15px;
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: #fff;
+  margin-bottom: 12px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #8A8A8A;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .bar-percentage {
-  color: #c89b3c;
+  color: #C89B3C;
   font-size: 1.5rem;
+  font-weight: 700;
 }
 
 .bar-track {
-  height: 30px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 15px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
   overflow: hidden;
   position: relative;
 }
 
 .bar-fill {
   height: 100%;
-  border-radius: 15px;
+  border-radius: 4px;
   transition: width 1s ease-out;
-  box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
   animation: fillBar 1.5s ease-out;
 }
 
 .bar-caption {
-  margin-top: 10px;
-  text-align: center;
-  font-size: 1rem;
-  font-weight: 600;
-  color: #a09b8c;
-  letter-spacing: 1px;
+  margin-top: 8px;
+  text-align: right;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #6B6B6B;
 }
 
 @keyframes fillBar {

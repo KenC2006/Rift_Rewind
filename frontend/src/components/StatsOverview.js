@@ -11,21 +11,18 @@ const StatsOverview = ({ stats }) => {
     {
       label: 'Total Matches',
       value: stats.total_matches,
-      icon: '🎮',
       color: '#c89b3c'
     },
     {
       label: 'Average KDA',
       value: kda,
-      icon: '⚔️',
-      color: kda >= 3 ? '#00c853' : kda >= 2 ? '#ffc107' : '#ff5252',
+      color: kda >= 3 ? '#4CAF50' : kda >= 2 ? '#FFA726' : '#EF5350',
       subtitle: `${stats.avg_kills?.toFixed(1)} / ${stats.avg_deaths?.toFixed(1)} / ${stats.avg_assists?.toFixed(1)}`
     },
     {
       label: 'Pentakills',
       value: stats.pentakills || 0,
-      icon: '⭐',
-      color: '#e91e63'
+      color: '#9C27B0'
     }
   ];
 
@@ -39,14 +36,11 @@ const StatsOverview = ({ stats }) => {
             className="stat-card"
             style={{ animationDelay: `${index * 0.1}s` }}
           >
-            <div className="stat-icon" style={{ color: stat.color }}>
-              {stat.icon}
-            </div>
             <div className="stat-content">
+              <div className="stat-label">{stat.label}</div>
               <div className="stat-value" style={{ color: stat.color }}>
                 {stat.value}
               </div>
-              <div className="stat-label">{stat.label}</div>
               {stat.subtitle && (
                 <div className="stat-subtitle">{stat.subtitle}</div>
               )}
