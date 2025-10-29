@@ -128,7 +128,7 @@ def analyze_player():
 
         # Step 5: Generate AI coaching insights with rank-aware analysis
         prompt = InsightGenerator.create_year_in_review_prompt(stats, display_name, solo_rank)
-        insights = bedrock_client.generate_insights(prompt, max_tokens=6000)
+        insights = bedrock_client.generate_insights(prompt, max_tokens=8000)  # Increased to ensure all 8 sections are complete
 
         # Return everything including rank info
         player_data = {
