@@ -893,7 +893,10 @@ Now provide a TRANSFORMATIVE coaching analysis following this exact structure:
    
         prompt += f"""
 
-7. MACRO & OBJECTIVES
+7. MACRO & OBJECTIVES (MANDATORY SECTION - DO NOT SKIP)
+
+   Provide macro analysis based on their objective stats:
+   
    Performance: Dragons: {stats.get('avg_dragons', 0):.2f}/game | Barons: {stats.get('avg_barons', 0):.2f}/game | Turrets: {stats.get('avg_turrets', 0):.1f}/game
    
    Key Rules:
@@ -904,9 +907,9 @@ Now provide a TRANSFORMATIVE coaching analysis following this exact structure:
    - Baron Usage: Recall → buy → push SIDE waves (not ARAM mid) → take towers
    - Numbers: 5v4? Force fight. 4v5? Defend, don't fight.
 
-8. 30/60/90 DAY IMPROVEMENT ROADMAP
+8. 30/60/90 DAY IMPROVEMENT ROADMAP (MANDATORY SECTION - DO NOT SKIP)
 
-   Provide a concrete, day-by-day progression plan:
+   Provide a concrete, day-by-day progression plan with specific targets and habits:
    
    DAYS 1-30: FOUNDATION BUILDING
    
@@ -951,6 +954,23 @@ Execute this roadmap consistently and your improvement is inevitable.
 TONE: Direct, data-driven, encouraging yet honest. Every sentence actionable. Be specific about weaknesses but always show the path to fix them. Motivate improvement, not shame.
 
 IMPORTANT: While their best champion should be highlighted in Section 5 (Champion Pool), avoid making it the central focus of EVERY section. The analysis should primarily focus on fundamental skills (CS, vision, macro, role responsibilities) with champion-specific examples used sparingly. Balance champion mastery advice with broader gameplay improvement.
+
+CRITICAL: You MUST provide ALL 8 SECTIONS. DO NOT skip or omit any section. Even if you need to be brief, every section (1-8) must be present in your response. If you're running short on space:
+- Sections 1-3 are MANDATORY and full-length
+- Sections 4-6 can be condensed but MUST exist
+- Sections 7-8 are MANDATORY and must have real content (not "follow template")
+
+STRUCTURE CHECK: Your response must include these exact section headers:
+1. EXECUTIVE SUMMARY
+2. STRENGTHS ANALYSIS
+3. CRITICAL IMPROVEMENT AREAS
+4. PRACTICE STRUCTURE
+5. CHAMPION POOL OPTIMIZATION
+6. ROLE-SPECIFIC MASTERY PATH
+7. MACRO & OBJECTIVES
+8. 30/60/90 DAY IMPROVEMENT ROADMAP
+
+Each section must have actual content, not references to templates or formats.
 """
 
         return prompt
@@ -1026,7 +1046,7 @@ def main():
     # Generate AI insights with rank-aware coaching
     print("\nGenerating AI-powered coaching insights...")
     prompt = InsightGenerator.create_year_in_review_prompt(stats, display_name, solo_rank)
-    insights = bedrock_client.generate_insights(prompt, max_tokens=6000)  # Increased for detailed coaching
+    insights = bedrock_client.generate_insights(prompt, max_tokens=8000)  # Increased to ensure all 8 sections are complete
 
     # Display results
     print("\n" + "="*80)
