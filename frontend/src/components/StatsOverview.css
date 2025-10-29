@@ -109,6 +109,15 @@
   animation: fillBar 1.5s ease-out;
 }
 
+.bar-caption {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #a09b8c;
+  letter-spacing: 1px;
+}
+
 @keyframes fillBar {
   from {
     width: 0 !important;

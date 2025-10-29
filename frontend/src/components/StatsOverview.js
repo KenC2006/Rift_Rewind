@@ -15,13 +15,6 @@ const StatsOverview = ({ stats }) => {
       color: '#c89b3c'
     },
     {
-      label: 'Win Rate',
-      value: `${winRate.toFixed(1)}%`,
-      icon: '🏆',
-      color: winRate >= 50 ? '#00c853' : '#ff5252',
-      subtitle: `${stats.wins}W / ${stats.losses}L`
-    },
-    {
       label: 'Average KDA',
       value: kda,
       icon: '⚔️',
@@ -78,6 +71,9 @@ const StatsOverview = ({ stats }) => {
                 : 'linear-gradient(90deg, #ff5252 0%, #ff8a80 100%)'
             }}
           ></div>
+        </div>
+        <div className="bar-caption">
+          {stats.wins}W / {stats.losses}L
         </div>
       </div>
     </div>

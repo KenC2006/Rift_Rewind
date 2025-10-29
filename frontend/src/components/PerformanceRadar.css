@@ -1,0 +1,83 @@
+.performance-radar {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border-radius: 16px;
+  padding: 24px;
+  margin: 20px 0;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  text-align: center;
+}
+
+.chart-title {
+  color: #fff;
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.performance-radar .chart-subtitle {
+  color: #999;
+  font-size: 13px;
+  text-align: center;
+  margin: 0 0 16px 0;
+}
+
+.chart-legend {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 16px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #ccc;
+  font-size: 13px;
+}
+
+.legend-color {
+  width: 20px;
+  height: 4px;
+  border-radius: 2px;
+  box-shadow: 0 0 8px currentColor;
+}
+
+.performance-radar svg {
+  display: block;
+  margin: 0 auto;
+}
+
+.radar-area-player {
+  transition: all 0.3s ease;
+}
+
+.radar-dot {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.radar-tooltip {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .performance-radar {
+    padding: 16px;
+  }
+
+  .chart-title {
+    font-size: 18px;
+  }
+
+  .performance-radar svg {
+    max-width: 100%;
+    height: auto;
+  }
+}
+

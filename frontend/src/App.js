@@ -8,6 +8,7 @@ import PlayerCard from './components/PlayerCard';
 import StatsOverview from './components/StatsOverview';
 import ChampionGrid from './components/ChampionGrid';
 import InsightsPanel from './components/InsightsPanel';
+import VisualizationDashboard from './components/VisualizationDashboard';
 
 // API Service
 import { analyzePlayer } from './services/api';
@@ -68,6 +69,7 @@ function App() {
         <div className="results-container">
           <PlayerCard player={data.player} />
           <StatsOverview stats={data.stats} />
+          <VisualizationDashboard stats={data.stats} />
           <ChampionGrid champions={data.stats.champions_played} />
           <InsightsPanel insights={data.insights} />
         </div>

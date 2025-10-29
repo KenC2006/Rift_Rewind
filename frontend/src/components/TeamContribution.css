@@ -1,0 +1,46 @@
+.team-contribution {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border-radius: 16px;
+  padding: 24px;
+  margin: 20px 0;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  text-align: center;
+}
+
+.team-contribution svg {
+  display: block;
+  margin: 0 auto;
+}
+
+.contribution-note {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  color: #999;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.note-icon {
+  font-size: 16px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .team-contribution {
+    padding: 16px;
+  }
+
+  .team-contribution svg {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .contribution-note {
+    font-size: 11px;
+  }
+}
+

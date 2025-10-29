@@ -1,0 +1,59 @@
+.objective-participation {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border-radius: 16px;
+  padding: 24px;
+  margin: 20px 0;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  text-align: center;
+}
+
+.objective-participation svg {
+  display: block;
+  margin: 20px auto 0;
+}
+
+.objective-participation .chart-legend {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin: 12px 0;
+}
+
+.objective-participation .legend-box {
+  width: 20px;
+  height: 12px;
+  border-radius: 2px;
+}
+
+.objective-participation .legend-box.player {
+  background: linear-gradient(90deg, #e74c3c 0%, #9b59b6 50%, #3498db 100%);
+  box-shadow: 0 0 8px rgba(52, 152, 219, 0.5);
+}
+
+.objective-participation .legend-box.benchmark {
+  background: #ffc107;
+  opacity: 0.7;
+}
+
+.player-bar,
+.benchmark-bar {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .objective-participation {
+    padding: 16px;
+    overflow-x: auto;
+  }
+
+  .chart-title {
+    font-size: 18px;
+  }
+
+  .chart-subtitle {
+    font-size: 12px;
+  }
+}
+
