@@ -383,6 +383,9 @@ class MatchDataProcessor:
 
             # Role tracking
             role = participant.get('teamPosition', 'UNKNOWN')
+            # Normalize UTILITY to SUPPORT (Riot API uses UTILITY, we use SUPPORT)
+            if role == 'UTILITY':
+                role = 'SUPPORT'
             # Normalize role: ignore empty/invalid roles
             if role and role.strip() and role != 'UNKNOWN':
                 stats['roles_played'][role] = stats['roles_played'].get(role, 0) + 1
@@ -391,7 +394,7 @@ class MatchDataProcessor:
                 champion = participant['championName']
                 # Very basic inference - could be expanded
                 if champion in ['Janna', 'Soraka', 'Lulu', 'Thresh', 'Blitzcrank', 'Leona', 'Nautilus', 'Braum']:
-                    stats['roles_played']['UTILITY'] = stats['roles_played'].get('UTILITY', 0) + 1
+                    stats['roles_played']['SUPPORT'] = stats['roles_played'].get('SUPPORT', 0) + 1
                 elif champion in ['Lee Sin', 'Elise', 'Graves', 'Kha\'Zix', 'Rek\'Sai', 'Nidalee', 'Kindred']:
                     stats['roles_played']['JUNGLE'] = stats['roles_played'].get('JUNGLE', 0) + 1
                 # Otherwise don't count it
@@ -511,7 +514,7 @@ class PerformanceBenchmarks:
             'IRON': 4.5, 'BRONZE': 5.0, 'SILVER': 5.5, 'GOLD': 6.5,
             'PLATINUM': 7.0, 'EMERALD': 7.5, 'DIAMOND': 8.0, 'MASTER+': 9.0
         },
-        'UTILITY': {
+        'SUPPORT': {
             'IRON': 1.0, 'BRONZE': 1.2, 'SILVER': 1.5, 'GOLD': 1.8,
             'PLATINUM': 2.0, 'EMERALD': 2.2, 'DIAMOND': 2.5, 'MASTER+': 2.8
         }
@@ -523,7 +526,7 @@ class PerformanceBenchmarks:
         'JUNGLE': {'IRON': 0.8, 'BRONZE': 1.0, 'SILVER': 1.2, 'GOLD': 1.5, 'PLATINUM': 1.8, 'EMERALD': 2.0, 'DIAMOND': 2.2, 'MASTER+': 2.5},
         'MIDDLE': {'IRON': 0.5, 'BRONZE': 0.6, 'SILVER': 0.8, 'GOLD': 1.0, 'PLATINUM': 1.2, 'EMERALD': 1.4, 'DIAMOND': 1.6, 'MASTER+': 1.8},
         'BOTTOM': {'IRON': 0.6, 'BRONZE': 0.8, 'SILVER': 1.0, 'GOLD': 1.2, 'PLATINUM': 1.4, 'EMERALD': 1.6, 'DIAMOND': 1.8, 'MASTER+': 2.0},
-        'UTILITY': {'IRON': 2.0, 'BRONZE': 2.5, 'SILVER': 3.0, 'GOLD': 3.5, 'PLATINUM': 4.0, 'EMERALD': 4.5, 'DIAMOND': 5.0, 'MASTER+': 5.5}
+        'SUPPORT': {'IRON': 2.0, 'BRONZE': 2.5, 'SILVER': 3.0, 'GOLD': 3.5, 'PLATINUM': 4.0, 'EMERALD': 4.5, 'DIAMOND': 5.0, 'MASTER+': 5.5}
     }
     
     # KDA benchmarks
@@ -682,11 +685,11 @@ COMBAT & SURVIVABILITY:
 VISION & MAP CONTROL:
    Vision/min: {player_vision_per_min:.2f} | Target for {primary_role}: {vision_benchmark:.1f}
    - Vision score/game: {stats.get('avg_vision_score', 0):.1f} | Target: {vision_benchmark * 30:.0f}+ (30min game)
-   - Control wards/game: {stats.get('avg_control_wards', 0):.1f} | Target: {3.5 if primary_role == 'UTILITY' else 2.5}+
+   - Control wards/game: {stats.get('avg_control_wards', 0):.1f} | Target: {3.5 if primary_role == 'SUPPORT' else 2.5}+
    - Wards placed: {stats.get('avg_wards_placed', 0):.1f}/game | Cleared: {stats.get('avg_wards_killed', 0):.1f}/game
    
    VISION PRIORITY BY ROLE:
-   {f"- Support: CRITICAL (vision is your primary job, aim for 100+ vision score)"if primary_role == 'UTILITY' else f"- Jungle: HIGH (vision = objective control, aim for 50+ vision score)" if primary_role == 'JUNGLE' else f"- {primary_role}: MEDIUM (buy pinks every back, aim for 30-40 vision score)"}
+   {f"- Support: CRITICAL (vision is your primary job, aim for 100+ vision score)"if primary_role == 'SUPPORT' else f"- Jungle: HIGH (vision = objective control, aim for 50+ vision score)" if primary_role == 'JUNGLE' else f"- {primary_role}: MEDIUM (buy pinks every back, aim for 30-40 vision score)"}
    
    Assessment: {"✓ EXCELLENT vision control" if player_vision_per_min >= vision_benchmark * 1.1 else "✓ ADEQUATE vision" if player_vision_per_min >= vision_benchmark * 0.9 else "⚠️ LOW VISION - Buy control wards every back"}
 
@@ -697,7 +700,7 @@ MACRO & OBJECTIVE CONTROL:
    - Inhibitor Takedowns/game: {stats.get('avg_inhibitors', 0):.2f}
    
    MACRO PRIORITY BY ROLE:
-   {f"- Jungle: YOU control objectives. Track enemy jungle, secure every drake, call baron timers" if primary_role == 'JUNGLE' else f"- Support: Roam for drakes, deep ward for baron setup, engage/disengage fights" if primary_role == 'UTILITY' else f"- {primary_role}: Respond to objective pings, push waves before rotating, prioritize drakes over farm"}
+   {f"- Jungle: YOU control objectives. Track enemy jungle, secure every drake, call baron timers" if primary_role == 'JUNGLE' else f"- Support: Roam for drakes, deep ward for baron setup, engage/disengage fights" if primary_role == 'SUPPORT' else f"- {primary_role}: Respond to objective pings, push waves before rotating, prioritize drakes over farm"}
    
    OBJECTIVE PRIORITY SYSTEM (General Guide):
    - TIER 1 (Always contest): Soul Drake, Baron Nashor, Game-ending inhibitor
@@ -709,7 +712,7 @@ MACRO & OBJECTIVE CONTROL:
 
 WIN CONDITIONS & CONSISTENCY:
    - Win Rate: {stats.get('win_rate', 0):.1f}% ({stats['wins']}W-{stats['losses']}L)
-   - Kill Participation: {stats.get('avg_kill_participation', 0):.1f}% | Target: {60 if primary_role in ['JUNGLE', 'UTILITY'] else 55 if primary_role == 'MIDDLE' else 50}%+
+   - Kill Participation: {stats.get('avg_kill_participation', 0):.1f}% | Target: {60 if primary_role in ['JUNGLE', 'SUPPORT'] else 55 if primary_role == 'MIDDLE' else 50}%+
    - First Blood: {(stats.get('first_bloods', 0) / max(stats['total_matches'], 1) * 100):.1f}% of games
    - Best Champion: {stats.get('best_champion', {}).get('name', 'None')} ({stats.get('best_champion', {}).get('win_rate', 0):.1f}% WR, {stats.get('best_champion', {}).get('games', 0)} games)
 
@@ -833,7 +836,7 @@ Now provide a TRANSFORMATIVE coaching analysis following this exact structure:
    3. GANK EFFECTIVENESS - Quality > quantity (need 60%+ success rate)
    4. VISION DOMINANCE - Your pinks = your lanes' safety
    5. CARRY DIFF - Outfarm + outgank enemy jungle = gg"""
-        else:  # UTILITY/Support
+        else:  # SUPPORT
             prompt += """
    1. VISION CONTROL - Aim for 100+ vision score (your primary job)
    2. PEEL - Your carry's life > your life
@@ -858,12 +861,12 @@ Now provide a TRANSFORMATIVE coaching analysis following this exact structure:
             prompt += """
    - Full clearing jungle while team loses objectives
    - Not tracking enemy lanes (waste time ganking pushed lanes)"""
-        else:  # UTILITY
+        else:  # SUPPORT
             prompt += """
    - Warding same spots repeatedly (enemy clears them)
    - Following ADC into danger (both die)"""
    
-        if primary_role != 'UTILITY':
+        if primary_role != 'SUPPORT':
             prompt += """
    - Building same items every game (need adaptability)"""
         else:
@@ -887,7 +890,7 @@ Now provide a TRANSFORMATIVE coaching analysis following this exact structure:
         elif primary_role == 'JUNGLE':
             prompt += """
    'The Vertical Jungle' - If you see enemy jungler top side, immediately invade their bottom side camps. Free gold + map control."""
-        else:  # UTILITY
+        else:  # SUPPORT
             prompt += """
    'The Vision Triangle' - Place 3 wards in triangle around objective before it spawns. Cover all entrances = enemy can't flank. This wins objective fights."""
    
@@ -903,7 +906,7 @@ Now provide a TRANSFORMATIVE coaching analysis following this exact structure:
    - Wave Priority: Check wave state before rotating (pushed = go, frozen = stay)
    - Objective Timings: Drake 5:00, Baron 20:00, Herald 8:00, Plates fall 14:00
    - Trade Matrix: If enemy takes drake, did you get Herald+plates? Track what you gain vs lose
-   - {"Vision Setup: Place deep wards 30s before objectives spawn" if primary_role in ['JUNGLE', 'UTILITY'] else "Rotation: Push wave hard before objective, enemy loses CS if they contest"}
+   - {"Vision Setup: Place deep wards 30s before objectives spawn" if primary_role in ['JUNGLE', 'SUPPORT'] else "Rotation: Push wave hard before objective, enemy loses CS if they contest"}
    - Baron Usage: Recall → buy → push SIDE waves (not ARAM mid) → take towers
    - Numbers: 5v4? Force fight. 4v5? Defend, don't fight.
 
