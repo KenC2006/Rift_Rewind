@@ -90,13 +90,9 @@ const KDAScatter = ({ champions }) => {
       .style('stroke-dasharray', '3,3')
       .style('opacity', 0.3);
 
-    // Add ideal zone (low deaths, high kills+assists)
-    // Ideal zone: constrain to chart area so it doesn't extend below x-axis
-    const idealTopY = Math.max(0, yScale(15));
-    const idealHeight = Math.max(0, Math.min(height - idealTopY, height));
     const idealZone = g.append('rect')
       .attr('x', 0)
-      .attr('y', idealTopY)
+      .attr('y', 0)
       .attr('width', xScale(5)) // Low deaths (0-5)
       .attr('height', height - yScale(15)) // High K+A (15+)
       .style('fill', '#C89B3C')
@@ -242,10 +238,6 @@ const KDAScatter = ({ champions }) => {
           <strong>Tip:</strong> Champions in the top-left are your most efficient (low deaths, high impact)
         </div>
       </div>
-      <p className="chart-subtitle">Deaths vs kills+assists per game</p>
-      <p className="chart-description">Each bubble represents a champion (bigger = more games, greener = higher win rate).</p>
-      <svg ref={svgRef}></svg>
-      
     </div>
   );
 };
