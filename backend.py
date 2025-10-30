@@ -11,6 +11,7 @@ from datetime import datetime, timedelta
 import requests
 import boto3
 from dotenv import load_dotenv
+from pathlib import Path
 
 # Load environment variables
 load_dotenv()
@@ -55,7 +56,7 @@ class RiotAPIClient:
         headers = {'X-Riot-Token': self.api_key}
 
         try:
-            response = requests.get(url, headers=headers)
+            response = requests.get(url, headers=headers, timeout=15)
 
             if response.status_code == 200:
                 return response.json()
@@ -137,6 +138,11 @@ class RiotAPIClient:
         url = f"{self.regional_url}/lol/match/v5/matches/{match_id}"
         return self._make_request(url)
     
+    def get_match_timeline(self, match_id: str) -> Optional[Dict]:
+        """Get timeline data for a match (frames with events)"""
+        url = f"{self.regional_url}/lol/match/v5/matches/{match_id}/timeline"
+        return self._make_request(url)
+    
     def get_ranked_info(self, summoner_id: str) -> Optional[List[Dict]]:
         """Get ranked information for a summoner
         
@@ -149,8 +155,10 @@ class RiotAPIClient:
         url = f"{self.base_url}/lol/league/v4/entries/by-summoner/{summoner_id}"
         return self._make_request(url)
 
-    def get_full_year_matches(self, puuid: str) -> List[Dict]:
-        """Get all matches from the past year for a player"""
+    def get_full_year_matches(self, puuid: str, include_timeline: bool = False) -> List[Dict]:
+        """Get all matches from the past year for a player.
+        If include_timeline is True, attaches timeline under key 'timeline' for each match.
+        """
         # Calculate timestamp for 1 year ago
         one_year_ago = int((datetime.now() - timedelta(days=365)).timestamp())
 
@@ -175,11 +183,23 @@ class RiotAPIClient:
             print(f"Fetched {len(match_ids)} match IDs. Retrieving details...")
 
             # Get details for each match
+            timeline_fetched = 0
             for match_id in match_ids:
                 match_data = self.get_match_details(match_id)
                 if match_data:
+                    if include_timeline:
+                        try:
+                            # Avoid overloading Riot API: cap timelines per page
+                            if timeline_fetched < 10:
+                                timeline = self.get_match_timeline(match_id)
+                                if timeline:
+                                    match_data['timeline'] = timeline
+                                timeline_fetched += 1
+                                time.sleep(0.05)
+                        except Exception as e:
+                            print(f"Timeline fetch failed for {match_id}: {e}")
                     all_matches.append(match_data)
-                time.sleep(0.1)  # Small delay to avoid rate limiting
+                time.sleep(0.05)  # Small delay to avoid rate limiting
 
             # If we got fewer than batch_size, we've reached the end
             if len(match_ids) < batch_size:
@@ -245,6 +265,8 @@ class MatchDataProcessor:
     def extract_player_stats(matches: List[Dict], puuid: str) -> Dict:
         """Extract comprehensive statistics from match history"""
 
+        # Note: Do not filter by items.json here; frontend will map IDs to names and ignore unknowns
+
         stats = {
             'total_matches': len(matches),
             'wins': 0,
@@ -276,6 +298,12 @@ class MatchDataProcessor:
             'early_game_cs': [],  # CS at 10 minutes for each game
             'damage_share': [],  # Percent of team's damage
             'gold_share': [],  # Percent of team's gold
+            # Item tracking
+            'items_per_match': [],  # {matchId, gameCreation, items:[ids], trinket:id}
+            'item_counts': {},      # {itemId: count}
+            'inventory_snapshots': [],  # {matchId, start:[ids], mid:[ids], final:[ids], trinketFinal:id}
+            # Grouped by champion for frontend item-usage analytics
+            'inventory_by_champion': {},  # {champion: {matches: n, start: [ [ids]... ], mid: [ [ids]... ], final: [ [ids]... ]}}
         }
 
         for match in matches:
@@ -362,8 +390,123 @@ class MatchDataProcessor:
             if team_gold > 0:
                 stats['gold_share'].append((participant['goldEarned'] / team_gold) * 100)
 
+            # Collect final inventory from participant slots
+            match_id = match.get('metadata', {}).get('matchId')
+            game_creation = match['info'].get('gameCreation')
+            item_keys = ['item0','item1','item2','item3','item4','item5']
+            trinket_key = 'item6'
+            final_items: List[int] = []
+            for key in item_keys:
+                item_id = int(participant.get(key, 0) or 0)
+                if item_id > 0:
+                    final_items.append(item_id)
+                    stats['item_counts'][str(item_id)] = stats['item_counts'].get(str(item_id), 0) + 1
+
+            trinket_id = int(participant.get(trinket_key, 0) or 0)
+            stats['items_per_match'].append({
+                'matchId': match_id,
+                'gameCreation': game_creation,
+                'items': final_items,
+                'trinket': (trinket_id if trinket_id > 0 else None)
+            })
+
+            # Inventory snapshots via timeline (start, mid, final)
+            start_items: List[int] = []
+            mid_items: List[int] = []
+            timeline = match.get('timeline')
+            if timeline and 'info' in timeline and 'frames' in timeline['info']:
+                frames = timeline['info']['frames']
+                pid = participant.get('participantId')
+                game_duration_sec = match['info'].get('gameDuration', 0)
+                game_duration_ms = int(game_duration_sec * 1000)
+                start_cutoff_ms = 120000
+                mid_cutoff_ms = max(game_duration_ms // 2, 1)
+
+                def reconstruct_inventory(cutoff_ms: int) -> List[int]:
+                    # Track order of purchases and a simple multiset count
+                    purchase_order: List[int] = []
+                    counts: Dict[int, int] = {}
+                    for frame in frames:
+                        ts = frame.get('timestamp', 0)
+                        if ts > cutoff_ms:
+                            break
+                        for ev in (frame.get('events') or []):
+                            if ev.get('participantId') != pid:
+                                continue
+                            etype = ev.get('type')
+                            if etype == 'ITEM_PURCHASED':
+                                iid = int(ev.get('itemId') or 0)
+                                if iid > 0:
+                                    purchase_order.append(iid)
+                                    counts[iid] = counts.get(iid, 0) + 1
+                            elif etype in ('ITEM_SOLD', 'ITEM_DESTROYED'):
+                                iid = int(ev.get('itemId') or 0)
+                                if counts.get(iid, 0) > 0:
+                                    counts[iid] -= 1
+                                    # remove one occurrence from the right (latest)
+                                    for i in range(len(purchase_order) - 1, -1, -1):
+                                        if purchase_order[i] == iid:
+                                            purchase_order.pop(i)
+                                            break
+                                    if counts[iid] == 0:
+                                        counts.pop(iid, None)
+                            elif etype == 'ITEM_UNDO':
+                                before_id = int(ev.get('beforeId') or 0)
+                                after_id = int(ev.get('afterId') or 0)
+                                # undo afterId (remove one from right)
+                                if counts.get(after_id, 0) > 0:
+                                    counts[after_id] -= 1
+                                    for i in range(len(purchase_order) - 1, -1, -1):
+                                        if purchase_order[i] == after_id:
+                                            purchase_order.pop(i)
+                                            break
+                                    if counts[after_id] == 0:
+                                        counts.pop(after_id, None)
+                                # restore beforeId as if purchased
+                                if before_id > 0:
+                                    purchase_order.append(before_id)
+                                    counts[before_id] = counts.get(before_id, 0) + 1
+
+                    # Build up to 6 unique items, preferring most recent purchases
+                    seen: set = set()
+                    result_rev: List[int] = []
+                    for iid in reversed(purchase_order):
+                        if iid not in seen:
+                            seen.add(iid)
+                            result_rev.append(iid)
+                        if len(result_rev) >= 6:
+                            break
+                    return list(reversed(result_rev))
+
+                start_items = reconstruct_inventory(start_cutoff_ms)
+                mid_items = reconstruct_inventory(mid_cutoff_ms)
+
+            snapshot_entry = {
+                'matchId': match_id,
+                'start': start_items,
+                'mid': mid_items,
+                'final': final_items,
+                'trinketFinal': (trinket_id if trinket_id > 0 else None)
+            }
+            stats['inventory_snapshots'].append(snapshot_entry)
+
             # Champion tracking
             champion = participant['championName']
+            # Track inventory by champion
+            if champion not in stats['inventory_by_champion']:
+                stats['inventory_by_champion'][champion] = {
+                    'matches': 0,
+                    'start': [],
+                    'mid': [],
+                    'final': []
+                }
+            stats['inventory_by_champion'][champion]['matches'] += 1
+            if start_items:
+                stats['inventory_by_champion'][champion]['start'].append(start_items)
+            if mid_items:
+                stats['inventory_by_champion'][champion]['mid'].append(mid_items)
+            if final_items:
+                stats['inventory_by_champion'][champion]['final'].append(final_items)
             if champion not in stats['champions_played']:
                 stats['champions_played'][champion] = {
                     'games': 0,

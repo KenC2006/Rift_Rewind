@@ -65,6 +65,19 @@ export const healthCheck = async () => {
 };
 
 /**
+ * Get item ID->name mapping from backend
+ * @returns {Promise<object>} - { [id: string]: name }
+ */
+export const getItemsMapping = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/api/items`);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error;
+  }
+};
+
+/**
  * Send a chat message to the AI coach
  * @param {string} message - User's message
  * @param {object} playerData - Player data including stats and insights
