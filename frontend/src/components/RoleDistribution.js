@@ -74,14 +74,14 @@ const RoleDistribution = ({ rolesPlayed }) => {
       .attr('class', 'slice');
 
     slices.append('path')
-      .attr('d', arc)
+      // Start with zero radius for clean entrance
+      .attr('d', (d) => d3.arc().innerRadius(0).outerRadius(0)(d))
       .attr('fill', d => d.data.color)
       .attr('stroke', '#1a1a2e')
       .attr('stroke-width', 3)
       .style('opacity', 0.85)
       .style('filter', d => `drop-shadow(0 0 8px ${d.data.color})`)
       .style('cursor', 'pointer')
-      .each(function(d) { this._current = d; }) // Store the initial angles
       .on('mouseover', function(event, d) {
         d3.select(this)
           .transition()
@@ -112,14 +112,23 @@ const RoleDistribution = ({ rolesPlayed }) => {
         tooltip.style('opacity', 0);
       });
 
-    // Animate pie chart entrance
+    // Animate pie chart entrance (grow from center)
     slices.selectAll('path')
       .transition()
       .duration(1000)
+      .ease(d3.easeCubicOut)
       .attrTween('d', function(d) {
-        const interpolate = d3.interpolate({ startAngle: 0, endAngle: 0 }, d);
+        const r0 = 0;
+        const r1 = radius;
+        const ir0 = 0;
+        const ir1 = radius * 0.6;
+        const ro = d3.interpolate(r0, r1);
+        const ri = d3.interpolate(ir0, ir1);
         return function(t) {
-          return arc(interpolate(t));
+          const generator = d3.arc()
+            .innerRadius(ri(t))
+            .outerRadius(ro(t));
+          return generator(d);
         };
       });
 
@@ -188,7 +197,16 @@ const RoleDistribution = ({ rolesPlayed }) => {
 
   return (
     <div className="role-distribution">
-      <h3 className="chart-title">Role Distribution</h3>
+      <div className="chart-title-row">
+        <h3 className="chart-title">Role Distribution</h3>
+        <div className="help-icon" aria-label="Role Distribution info" tabIndex={0}>
+          ?
+          <div className="help-tooltip">
+            Displays the proportion of your games played in each role. This helps identify your primary role and how consistently you queue and perform in that position across the season.
+          </div>
+        </div>
+      </div>
+      <p className="chart-subtitle">Games played per role</p>
       <svg ref={svgRef}></svg>
       <div className="role-legend">
         {rolesPlayed && Object.entries(rolesPlayed)

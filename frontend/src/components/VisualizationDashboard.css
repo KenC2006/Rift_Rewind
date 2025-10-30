@@ -157,6 +157,20 @@
   margin-bottom: 4px;
 }
 
+.highlight-champion-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+.highlight-champion-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.35);
+}
+
 .highlight-stats {
   color: rgba(255, 255, 255, 0.85);
   font-size: 14px;
@@ -241,6 +255,11 @@
 
   .highlight-champion {
     font-size: 24px;
+  }
+
+  .highlight-champion-img {
+    width: 36px;
+    height: 36px;
   }
 }
 

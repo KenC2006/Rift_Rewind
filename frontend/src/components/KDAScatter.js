@@ -91,18 +91,21 @@ const KDAScatter = ({ champions }) => {
       .style('opacity', 0.3);
 
     // Add ideal zone (low deaths, high kills+assists)
+    // Ideal zone: constrain to chart area so it doesn't extend below x-axis
+    const idealTopY = Math.max(0, yScale(15));
+    const idealHeight = Math.max(0, Math.min(height - idealTopY, height));
     const idealZone = g.append('rect')
       .attr('x', 0)
-      .attr('y', 0)
+      .attr('y', idealTopY)
       .attr('width', xScale(5)) // Low deaths (0-5)
-      .attr('height', height - yScale(15)) // High K+A (15+)
+      .attr('height', idealHeight) // High K+A (15+)
       .style('fill', '#00c853')
       .style('opacity', 0.05)
       .style('pointer-events', 'none');
 
     g.append('text')
       .attr('x', xScale(2.5))
-      .attr('y', yScale(17))
+      .attr('y', Math.max(12, yScale(17)))
       .attr('text-anchor', 'middle')
       .style('fill', '#00c853')
       .style('font-size', '11px')
@@ -231,14 +234,19 @@ const KDAScatter = ({ champions }) => {
 
   return (
     <div className="kda-scatter">
-      <h3 className="chart-title">Champion Performance Map</h3>
-      <p className="chart-subtitle">Bubble size = games played • Color = win rate (red → green)</p>
-      <svg ref={svgRef}></svg>
-      <div className="scatter-legend">
-        <div className="legend-note">
-          💡 <strong>Tip:</strong> Champions in the top-left are your most efficient (low deaths, high impact)
+      <div className="chart-title-row">
+        <h3 className="chart-title">Champion Performance Map</h3>
+        <div className="help-icon" aria-label="Champion Performance Map info" tabIndex={0}>
+          ?
+          <div className="help-tooltip">
+            Each bubble is a champion you played (size = games). X-axis shows average deaths per game (lower is better), Y-axis shows average kills+assists (higher is better). Color reflects win rate from red (lower) to green (higher). Top-left area indicates efficient, high-impact champions.
+          </div>
         </div>
       </div>
+      <p className="chart-subtitle">Deaths vs kills+assists per game</p>
+      <p className="chart-description">Each bubble represents a champion (bigger = more games, greener = higher win rate).</p>
+      <svg ref={svgRef}></svg>
+      
     </div>
   );
 };

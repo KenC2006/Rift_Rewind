@@ -9,6 +9,11 @@ import './VisualizationDashboard.css';
 const VisualizationDashboard = ({ stats }) => {
   if (!stats) return null;
 
+  const getChampionImage = (championName) => {
+    const formattedName = (championName || '').replace(/[^a-zA-Z]/g, '');
+    return `https://ddragon.leagueoflegends.com/cdn/14.1.1/img/champion/${formattedName}.png`;
+  };
+
   return (
     <div className="visualization-dashboard">
       <div className="dashboard-header">
@@ -98,7 +103,15 @@ const VisualizationDashboard = ({ stats }) => {
             <div className="highlight-icon">🏆</div>
             <div className="highlight-text">
               <div className="highlight-title">Your Best Champion</div>
-              <div className="highlight-champion">{stats.best_champion.name}</div>
+              <div className="highlight-champion-row">
+                <img
+                  className="highlight-champion-img"
+                  src={getChampionImage(stats.best_champion.name)}
+                  alt={stats.best_champion.name}
+                  onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                />
+                <div className="highlight-champion">{stats.best_champion.name}</div>
+              </div>
               <div className="highlight-stats">
                 {stats.best_champion.win_rate?.toFixed(0)}% Win Rate • {stats.best_champion.games} Games
               </div>

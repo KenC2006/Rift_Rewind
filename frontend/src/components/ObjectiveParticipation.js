@@ -249,8 +249,16 @@ const ObjectiveParticipation = ({ stats }) => {
 
   return (
     <div className="objective-participation">
-      <h3 className="chart-title">Objective Participation</h3>
-      <p className="chart-subtitle">Per Game Average vs {stats.primary_role} Benchmark</p>
+      <div className="chart-title-row">
+        <h3 className="chart-title">Objective Participation</h3>
+        <div className="help-icon" aria-label="Objective Participation info" tabIndex={0}>
+          ?
+          <div className="help-tooltip">
+            Compares your average Dragons, Barons, and Turret takedowns per game to role benchmarks. Higher participation often correlates with stronger macro play, better rotations, and more reliable win conditions.
+          </div>
+        </div>
+      </div>
+      <p className="chart-subtitle">Objectives per game vs role benchmark</p>
       <div className="chart-legend">
         <div className="legend-item">
           <span className="legend-box player"></span>

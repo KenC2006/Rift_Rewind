@@ -184,7 +184,15 @@ const TeamContribution = ({ stats }) => {
 
   return (
     <div className="team-contribution">
-      <h3 className="chart-title">Team Contribution</h3>
+      <div className="chart-title-row">
+        <h3 className="chart-title">Team Contribution</h3>
+        <div className="help-icon" aria-label="Team Contribution info" tabIndex={0}>
+          ?
+          <div className="help-tooltip">
+            Shows your share of team damage and gold compared to expected values for your role. Higher damage/gold share generally indicates more carry potential; lower values suggest a supportive or enabling playstyle.
+          </div>
+        </div>
+      </div>
       <p className="chart-subtitle">Your share of team resources vs {stats.primary_role} expected</p>
       <svg ref={svgRef}></svg>
       <div className="contribution-note">

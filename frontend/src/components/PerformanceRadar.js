@@ -233,7 +233,15 @@ const PerformanceRadar = ({ stats }) => {
 
   return (
     <div className="performance-radar">
-      <h3 className="chart-title">Performance Radar</h3>
+      <div className="chart-title-row">
+        <h3 className="chart-title">Performance Radar</h3>
+        <div className="help-icon" aria-label="Performance Radar info" tabIndex={0}>
+          ?
+          <div className="help-tooltip">
+            Visualizes your core performance versus role benchmarks. Each axis (CS/min, KDA, Vision, Objectives, Kill Participation) compares your average to a target for your role. Larger, more outward shapes indicate stronger performance relative to expectations.
+          </div>
+        </div>
+      </div>
       <p className="chart-subtitle">Compared to {stats.primary_role} benchmarks</p>
       <div className="chart-legend">
         <div className="legend-item">
