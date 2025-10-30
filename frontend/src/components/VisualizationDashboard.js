@@ -12,6 +12,12 @@ const VisualizationDashboard = ({ stats }) => {
 
   if (!stats) return null;
 
+  const getChampionImage = (championName) => {
+    // Format champion name for URL (remove spaces, handle special characters)
+    const formattedName = championName.replace(/[^a-zA-Z]/g, '');
+    return `https://ddragon.leagueoflegends.com/cdn/14.1.1/img/champion/${formattedName}.png`;
+  };
+
   const charts = [
     { component: <PerformanceRadar stats={stats} />, name: 'Performance Radar' },
     { component: <TeamContribution stats={stats} />, name: 'Team Contribution' },
