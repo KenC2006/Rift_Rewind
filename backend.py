@@ -494,45 +494,72 @@ class MatchDataProcessor:
 
 
 class PerformanceBenchmarks:
-    """Role and elo-specific performance benchmarks"""
+    """
+    Role and elo-specific performance benchmarks
+    
+    Data sources:
+    - CS/min: LeagueMath.com, League of Graphs, U.GG (2024)
+    - Vision: LeagueMath.com wards/min data (2024)
+    - KDA: League of Legends Tools aggregate statistics (2024)
+    
+    Note: Benchmarks represent realistic player averages across millions of matches.
+    """
     
     # CS per minute benchmarks by role and elo
+    # Based on data from LeagueMath.com and multiple stat aggregators
     CS_BENCHMARKS = {
         'TOP': {
-            'IRON': 4.5, 'BRONZE': 5.0, 'SILVER': 5.5, 'GOLD': 6.0, 
-            'PLATINUM': 6.5, 'EMERALD': 7.0, 'DIAMOND': 7.5, 'MASTER+': 8.0
+            'IRON': 4.0, 'BRONZE': 4.8, 'SILVER': 5.5, 'GOLD': 6.2, 
+            'PLATINUM': 6.8, 'EMERALD': 7.3, 'DIAMOND': 7.8, 'MASTER+': 8.3
         },
         'JUNGLE': {
-            'IRON': 3.0, 'BRONZE': 3.5, 'SILVER': 4.0, 'GOLD': 4.5,
-            'PLATINUM': 5.0, 'EMERALD': 5.5, 'DIAMOND': 6.0, 'MASTER+': 6.5
+            'IRON': 3.2, 'BRONZE': 3.8, 'SILVER': 4.3, 'GOLD': 4.8,
+            'PLATINUM': 5.2, 'EMERALD': 5.5, 'DIAMOND': 5.8, 'MASTER+': 6.2
         },
         'MIDDLE': {
-            'IRON': 4.5, 'BRONZE': 5.0, 'SILVER': 5.5, 'GOLD': 6.0,
-            'PLATINUM': 6.5, 'EMERALD': 7.0, 'DIAMOND': 7.5, 'MASTER+': 8.5
+            'IRON': 4.0, 'BRONZE': 4.2, 'SILVER': 4.6, 'GOLD': 5.0,
+            'PLATINUM': 5.2, 'EMERALD': 5.4, 'DIAMOND': 7.5, 'MASTER+': 8.6
         },
         'BOTTOM': {
-            'IRON': 4.5, 'BRONZE': 5.0, 'SILVER': 5.5, 'GOLD': 6.5,
-            'PLATINUM': 7.0, 'EMERALD': 7.5, 'DIAMOND': 8.0, 'MASTER+': 9.0
+            'IRON': 4.5, 'BRONZE': 5.5, 'SILVER': 6.5, 'GOLD': 7.3,
+            'PLATINUM': 8.0, 'EMERALD': 8.5, 'DIAMOND': 9.0, 'MASTER+': 9.5
         },
         'SUPPORT': {
-            'IRON': 1.0, 'BRONZE': 1.2, 'SILVER': 1.5, 'GOLD': 1.8,
-            'PLATINUM': 2.0, 'EMERALD': 2.2, 'DIAMOND': 2.5, 'MASTER+': 2.8
+            'IRON': 0.8, 'BRONZE': 0.9, 'SILVER': 1.0, 'GOLD': 1.1,
+            'PLATINUM': 1.2, 'EMERALD': 1.3, 'DIAMOND': 1.4, 'MASTER+': 1.5
         }
     }
     
     # Vision score per minute benchmarks
+    # Based on LeagueMath.com wards/min data and general vision score patterns
     VISION_BENCHMARKS = {
-        'TOP': {'IRON': 0.5, 'BRONZE': 0.6, 'SILVER': 0.8, 'GOLD': 1.0, 'PLATINUM': 1.2, 'EMERALD': 1.4, 'DIAMOND': 1.6, 'MASTER+': 1.8},
-        'JUNGLE': {'IRON': 0.8, 'BRONZE': 1.0, 'SILVER': 1.2, 'GOLD': 1.5, 'PLATINUM': 1.8, 'EMERALD': 2.0, 'DIAMOND': 2.2, 'MASTER+': 2.5},
-        'MIDDLE': {'IRON': 0.5, 'BRONZE': 0.6, 'SILVER': 0.8, 'GOLD': 1.0, 'PLATINUM': 1.2, 'EMERALD': 1.4, 'DIAMOND': 1.6, 'MASTER+': 1.8},
-        'BOTTOM': {'IRON': 0.6, 'BRONZE': 0.8, 'SILVER': 1.0, 'GOLD': 1.2, 'PLATINUM': 1.4, 'EMERALD': 1.6, 'DIAMOND': 1.8, 'MASTER+': 2.0},
-        'SUPPORT': {'IRON': 2.0, 'BRONZE': 2.5, 'SILVER': 3.0, 'GOLD': 3.5, 'PLATINUM': 4.0, 'EMERALD': 4.5, 'DIAMOND': 5.0, 'MASTER+': 5.5}
+        'TOP': {
+            'IRON': 0.55, 'BRONZE': 0.60, 'SILVER': 0.70, 'GOLD': 0.80, 
+            'PLATINUM': 0.90, 'EMERALD': 1.00, 'DIAMOND': 1.10, 'MASTER+': 1.25
+        },
+        'JUNGLE': {
+            # Multiplied by ~4 to convert wards placed to vision score
+            'IRON': 0.80, 'BRONZE': 0.85, 'SILVER': 0.92, 'GOLD': 1.05, 
+            'PLATINUM': 1.15, 'EMERALD': 1.20, 'DIAMOND': 1.25, 'MASTER+': 1.40
+        },
+        'MIDDLE': {
+            'IRON': 0.50, 'BRONZE': 0.55, 'SILVER': 0.60, 'GOLD': 0.70, 
+            'PLATINUM': 0.75, 'EMERALD': 0.80, 'DIAMOND': 0.85, 'MASTER+': 0.95
+        },
+        'BOTTOM': {
+            'IRON': 0.60, 'BRONZE': 0.70, 'SILVER': 0.80, 'GOLD': 0.90, 
+            'PLATINUM': 1.00, 'EMERALD': 1.10, 'DIAMOND': 1.20, 'MASTER+': 1.35
+        },
+        'SUPPORT': {
+            'IRON': 2.20, 'BRONZE': 2.50, 'SILVER': 2.80, 'GOLD': 3.20, 
+            'PLATINUM': 3.60, 'EMERALD': 4.00, 'DIAMOND': 4.40, 'MASTER+': 5.00
+        }
     }
     
-    # KDA benchmarks
+    # KDA benchmarks by elo (role-agnostic baseline)
     KDA_BENCHMARKS = {
-        'IRON': 2.0, 'BRONZE': 2.2, 'SILVER': 2.5, 'GOLD': 2.8,
-        'PLATINUM': 3.0, 'EMERALD': 3.2, 'DIAMOND': 3.5, 'MASTER+': 4.0
+        'IRON': 1.8, 'BRONZE': 2.0, 'SILVER': 2.3, 'GOLD': 2.6,
+        'PLATINUM': 2.9, 'EMERALD': 3.2, 'DIAMOND': 3.5, 'MASTER+': 4.0
     }
     
     @staticmethod
