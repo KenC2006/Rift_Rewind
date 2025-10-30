@@ -466,7 +466,9 @@
 /* Stats Ready Button */
 .stats-ready-wrapper {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
   margin: 2rem 0 1.5rem;
   animation: fadeInButton 0.6s ease-out;
 }
@@ -503,6 +505,37 @@
   transform: translateY(0);
 }
 
+.search-new-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: rgba(200, 155, 60, 0.1);
+  border: 1px solid #C89B3C;
+  border-radius: 8px;
+  color: #C89B3C;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.search-new-button svg {
+  flex-shrink: 0;
+}
+
+.search-new-button:hover {
+  background: rgba(200, 155, 60, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(200, 155, 60, 0.2);
+}
+
+.search-new-button:active {
+  transform: translateY(0);
+}
+
 @keyframes fadeInButton {
   from {
     opacity: 0;
@@ -515,13 +548,31 @@
 }
 
 @media (max-width: 768px) {
+  .stats-ready-wrapper {
+    width: 100%;
+    max-width: 400px;
+  }
+
   .view-stats-button {
     padding: 0.875rem 1.75rem;
     font-size: 0.9rem;
     gap: 10px;
+    width: 100%;
   }
 
   .view-stats-button svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .search-new-button {
+    padding: 0.675rem 1.25rem;
+    font-size: 0.85rem;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .search-new-button svg {
     width: 18px;
     height: 18px;
   }

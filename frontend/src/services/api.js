@@ -63,3 +63,23 @@ export const healthCheck = async () => {
     throw error;
   }
 };
+
+/**
+ * Send a chat message to the AI coach
+ * @param {string} message - User's message
+ * @param {object} playerData - Player data including stats and insights
+ * @param {array} conversationHistory - Previous conversation messages
+ * @returns {Promise} - AI coach response
+ */
+export const sendChatMessage = async (message, playerData, conversationHistory = []) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/api/chat`, {
+      message,
+      playerData,
+      conversationHistory
+    });
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error;
+  }
+};

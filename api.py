@@ -211,6 +211,135 @@ def get_player_stats(riot_id):
         }), 500
 
 
+@app.route('/api/chat', methods=['POST'])
+def chat_with_coach():
+    """
+    Interactive chat endpoint for personalized coaching advice
+
+    Request body:
+    {
+        "message": "User's question",
+        "playerData": {
+            "player": {...},
+            "stats": {...},
+            "insights": "..."
+        },
+        "conversationHistory": [
+            {"role": "user", "content": "..."},
+            {"role": "assistant", "content": "..."}
+        ]
+    }
+    """
+    try:
+        data = request.get_json()
+        user_message = data.get('message')
+        player_data = data.get('playerData', {})
+        conversation_history = data.get('conversationHistory', [])
+
+        if not user_message:
+            return jsonify({
+                'success': False,
+                'error': 'Message is required'
+            }), 400
+
+        # Build context-aware prompt
+        prompt = _build_chat_prompt(user_message, player_data, conversation_history)
+
+        # Generate response using Bedrock
+        response = bedrock_client.generate_insights(prompt, max_tokens=2000)
+
+        return jsonify({
+            'success': True,
+            'data': {
+                'response': response
+            }
+        })
+
+    except Exception as e:
+        print(f"Error in chat endpoint: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
+def _build_chat_prompt(user_message, player_data, conversation_history):
+    """Build a context-aware prompt for the chatbot"""
+
+    stats = player_data.get('stats', {})
+    player = player_data.get('player', {})
+    insights = player_data.get('insights', '')
+
+    player_name = f"{player.get('gameName', 'Player')}#{player.get('tagLine', '')}"
+    rank_info = player.get('rank', {})
+
+    # Build player context summary
+    context = f"""You are Ryze, a knowledgeable League of Legends coach. You're providing analysis and guidance to {player_name}.
+
+You're direct, analytical, and focused on improvement. Your coaching style is straightforward - you identify issues clearly and provide actionable solutions. Occasionally reference your extensive experience analyzing gameplay, but keep it subtle. Be honest about weaknesses while acknowledging strengths.
+
+PLAYER PROFILE:
+- Summoner: {player_name}
+- Level: {player.get('summonerLevel', 'Unknown')}
+"""
+
+    if rank_info:
+        context += f"- Rank: {rank_info.get('tier', '')} {rank_info.get('division', '')} ({rank_info.get('lp', 0)} LP)\n"
+        context += f"- Ranked Record: {rank_info.get('wins', 0)}W / {rank_info.get('losses', 0)}L\n"
+
+    context += f"\nPERFORMANCE STATISTICS (Past Year):\n"
+    context += f"- Total Games: {stats.get('total_matches', 0)}\n"
+    context += f"- Win Rate: {stats.get('win_rate', 0):.1f}%\n"
+    context += f"- Average KDA: {stats.get('avg_kills', 0):.1f}/{stats.get('avg_deaths', 0):.1f}/{stats.get('avg_assists', 0):.1f} (KDA Ratio: {stats.get('kda_ratio', 0):.2f})\n"
+    context += f"- CS/Min: {stats.get('cs_per_min', 0):.1f}\n"
+    context += f"- Gold/Min: {stats.get('gold_per_min', 0):.0f}\n"
+    context += f"- Damage/Min: {stats.get('damage_per_min', 0):.0f}\n"
+    context += f"- Vision Score/Game: {stats.get('avg_vision_score', 0):.1f}\n"
+    context += f"- Kill Participation: {stats.get('avg_kill_participation', 0):.1f}%\n"
+
+    # Add champion pool info
+    champions_played = stats.get('champions_played', {})
+    if champions_played:
+        top_champs = sorted(champions_played.items(), key=lambda x: x[1].get('games', 0), reverse=True)[:3]
+        context += f"\nTOP CHAMPIONS:\n"
+        for champ_name, champ_data in top_champs:
+            context += f"- {champ_name}: {champ_data.get('games', 0)} games, {champ_data.get('win_rate', 0):.1f}% WR, {champ_data.get('kda', 0):.2f} KDA\n"
+
+    # Add key insights excerpt (first 500 chars)
+    if insights:
+        context += f"\nKEY INSIGHTS FROM FULL ANALYSIS:\n{insights[:500]}...\n"
+
+    # Add conversation history (last 5 exchanges to manage context window)
+    if conversation_history:
+        context += "\nCONVERSATION HISTORY:\n"
+        recent_history = conversation_history[-10:]  # Last 5 exchanges (10 messages)
+        for msg in recent_history:
+            role = "Player" if msg['role'] == 'user' else "Ryze"
+            context += f"{role}: {msg['content']}\n"
+
+    # Add coaching guidelines
+    context += """
+COACHING APPROACH:
+- Be direct and clear in your analysis
+- Provide specific, data-backed recommendations
+- Identify both strengths and areas for improvement
+- Keep responses concise (2-3 paragraphs max)
+- Use their stats to support your points
+- Ask targeted follow-up questions when needed
+- Maintain a professional but approachable tone
+- Avoid excessive jokes or puns
+- Focus on actionable next steps
+
+Example tone: "Looking at your 6.2 CS/min, there's clear room for improvement in your farming. Your teamfighting stats are solid though - {avg_kill_participation}% kill participation shows good map awareness. Let's focus on early game laning fundamentals to boost that CS."
+
+"""
+
+    # Add user's current question
+    context += f"Player's Question: {user_message}\n\nRespond as Ryze with clear, actionable advice:"
+
+    return context
+
+
 if __name__ == '__main__':
     print("Starting Rift Rewind API...")
     print("API will be available at http://localhost:5000")
