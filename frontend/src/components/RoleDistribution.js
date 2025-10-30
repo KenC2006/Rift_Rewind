@@ -190,7 +190,10 @@ const RoleDistribution = ({ rolesPlayed }) => {
       <svg ref={svgRef}></svg>
       <div className="role-legend">
         {rolesPlayed && Object.entries(rolesPlayed)
-          .sort((a, b) => b[1] - a[1])
+          .sort((a, b) => {
+            const order = ['TOP', 'JUNGLE', 'MIDDLE', 'BOTTOM', 'SUPPORT'];
+            return order.indexOf(a[0]) - order.indexOf(b[0]);
+          })
           .map(([role, games]) => (
             <div key={role} className="legend-item">
               <span className="legend-dot" style={{
