@@ -7,6 +7,8 @@ import os
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from dotenv import load_dotenv
+import json
+from pathlib import Path
 
 from backend import RiotAPIClient, AWSBedrockClient, MatchDataProcessor, InsightGenerator
 
@@ -35,6 +37,41 @@ def health_check():
         'status': 'healthy',
         'message': 'Rift Rewind API is running'
     })
+
+
+@app.route('/api/items', methods=['GET'])
+def get_items_mapping():
+    """Return item ID -> name mapping from items.json (now ID->Name)."""
+    try:
+        items_path = Path('items.json')
+        if not items_path.exists():
+            return jsonify({'success': True, 'data': {}})
+        with items_path.open('r', encoding='utf-8') as f:
+            raw = json.load(f)
+
+        # items.json currently stores name -> id. We need id (string) -> name.
+        if isinstance(raw, dict) and raw:
+            # Detect schema: if keys look numeric, assume it's already id->name
+            sample_key = next(iter(raw.keys()))
+            if isinstance(sample_key, str) and sample_key.isdigit():
+                # Normalize keys to strings just in case
+                normalized = {str(k): v for k, v in raw.items()}
+                return jsonify({'success': True, 'data': normalized})
+            else:
+                # Reverse mapping name->id to id->name
+                reversed_map = {}
+                for name, item_id in raw.items():
+                    try:
+                        key = str(int(item_id))  # normalize numeric ids
+                    except Exception:
+                        key = str(item_id)
+                    # Last write wins if duplicates
+                    reversed_map[key] = name
+                return jsonify({'success': True, 'data': reversed_map})
+
+        return jsonify({'success': True, 'data': {}})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 
 @app.route('/api/player/<path:riot_id>', methods=['GET'])
@@ -114,8 +151,8 @@ def analyze_player():
                 print(f"Could not fetch ranked info: {e}")
                 # Continue without rank info
 
-        # Step 3: Fetch match history
-        matches = riot_client.get_full_year_matches(puuid)
+        # Step 3: Fetch match history with timelines for inventory snapshots
+        matches = riot_client.get_full_year_matches(puuid, include_timeline=True)
 
         if not matches:
             return jsonify({
@@ -180,8 +217,8 @@ def get_player_stats(riot_id):
 
         puuid = summoner['puuid']
 
-        # Fetch match history
-        matches = riot_client.get_full_year_matches(puuid)
+        # Fetch match history with timelines
+        matches = riot_client.get_full_year_matches(puuid, include_timeline=True)
 
         if not matches:
             return jsonify({

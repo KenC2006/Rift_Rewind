@@ -1,0 +1,29 @@
+.item-usage { padding: 24px; background: rgba(15, 25, 45, 0.4); border: 1px solid rgba(200, 155, 60, 0.15); border-radius: 8px; transition: all 0.3s ease; }
+.item-usage:hover { border-color: rgba(200, 155, 60, 0.5); background: rgba(15, 25, 45, 0.6); box-shadow: 0 0 20px rgba(200, 155, 60, 0.2); }
+.iu-title { margin: 0 0 4px; font-size: 20px; }
+.iu-subtitle { margin: 0 0 16px; color: #8aa0b6; }
+.iu-champ-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 12px; }
+.iu-champ-card { background: #0b1220; border: 1px solid #1c2740; border-radius: 8px; padding: 12px; text-align: center; color: #dce6f2; cursor: pointer; }
+.iu-champ-card:hover { border-color: #3b82f6; }
+.iu-champ-card-img { width: 72px; height: 72px; border-radius: 6px; display: block; margin: 0 auto 8px; }
+.iu-champ-card-name { font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.iu-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+.iu-modal { background: #0a0f1a; border: 1px solid #1c2740; border-radius: 10px; width: min(900px, 92vw); max-height: 85vh; overflow: auto; }
+.iu-modal-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-bottom: 1px solid #13203a; }
+.iu-champ { display: flex; align-items: center; gap: 10px; }
+.iu-champ-img { width: 36px; height: 36px; border-radius: 6px; }
+.iu-champ-name { font-weight: 600; }
+.iu-close { background: transparent; border: none; color: #9fb3c8; font-size: 24px; cursor: pointer; }
+.iu-modal-content { padding: 16px; display: grid; gap: 20px; }
+.phase-section {}
+.phase-title { font-weight: 600; margin-bottom: 8px; color: #9fb3c8; }
+.items-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+.item-tile { display: flex; align-items: center; gap: 10px; background: #0b1220; border: 1px solid #16223b; border-radius: 8px; padding: 8px; }
+.item-tile.highlight { border-color: #22c55e; box-shadow: 0 0 0 1px #22c55e33 inset; }
+.item-icon { width: 40px; height: 40px; border-radius: 6px; }
+.item-meta { display: flex; justify-content: space-between; align-items: baseline; width: 100%; gap: 8px; min-width: 0; }
+.item-name { font-size: 14px; color: #dce6f2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1 1 auto; min-width: 0; max-width: 65%; }
+.item-pct { font-size: 12px; color: #9fb3c8; white-space: nowrap; margin-left: auto; }
+
+

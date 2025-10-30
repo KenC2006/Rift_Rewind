@@ -14,6 +14,8 @@ function Climb() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
+  // Inventory snapshots removed from Bento; no extra sections
+
   if (!playerData) {
     return (
       <div className="climb-page">

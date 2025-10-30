@@ -5,6 +5,7 @@ import RoleDistribution from './RoleDistribution';
 import ObjectiveParticipation from './ObjectiveParticipation';
 import KDAScatter from './KDAScatter';
 import { FiBarChart2, FiTrendingUp, FiDollarSign, FiZap, FiEye, FiTarget, FiAward, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import ItemUsage from './ItemUsage';
 import './VisualizationDashboard.css';
 
 const VisualizationDashboard = ({ stats }) => {
@@ -23,7 +24,8 @@ const VisualizationDashboard = ({ stats }) => {
     { component: <TeamContribution stats={stats} />, name: 'Team Contribution' },
     { component: <RoleDistribution rolesPlayed={stats.roles_played} />, name: 'Role Distribution' },
     { component: <ObjectiveParticipation stats={stats} />, name: 'Objective Participation' },
-    { component: <KDAScatter champions={stats.champions_played} />, name: 'Champion Performance Map' }
+    { component: <KDAScatter champions={stats.champions_played} />, name: 'Champion Performance Map' },
+    { component: <ItemUsage stats={stats} />, name: 'Item Usage' }
   ];
 
   const nextChart = () => {

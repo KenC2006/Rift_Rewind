@@ -3,7 +3,7 @@ import BentoCard from './BentoCard';
 import InsightModal from './InsightModal';
 import './BentoGrid.css';
 
-const BentoGrid = ({ insights }) => {
+const BentoGrid = ({ insights, extraSections = [] }) => {
   const [selectedSection, setSelectedSection] = useState(null);
 
   // Parse insights into sections
@@ -69,7 +69,17 @@ const BentoGrid = ({ insights }) => {
     return sections;
   };
 
-  const sections = parseSections(insights);
+  let sections = parseSections(insights);
+  // Append any extra sections (e.g., Inventory Snapshots) before ROADMAP
+  if (Array.isArray(extraSections) && extraSections.length > 0) {
+    // Insert extras near the end: before ROADMAP if found, else append
+    const roadmapIdx = sections.findIndex(s => s.title && (s.title.includes('ROADMAP') || s.title.includes('30/60/90')));
+    if (roadmapIdx >= 0) {
+      sections = [...sections.slice(0, roadmapIdx), ...extraSections, ...sections.slice(roadmapIdx)];
+    } else {
+      sections = [...sections, ...extraSections];
+    }
+  }
 
   const handleCardClick = (section) => {
     setSelectedSection(section);
