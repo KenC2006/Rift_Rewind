@@ -118,7 +118,15 @@ const VisualizationDashboard = ({ stats }) => {
             <FiAward className="highlight-icon" size={48} />
             <div className="highlight-text">
               <div className="highlight-title">Your Best Champion</div>
-              <div className="highlight-champion">{stats.best_champion.name}</div>
+              <div className="highlight-champion-row">
+                <img
+                  className="highlight-champion-img"
+                  src={getChampionImage(stats.best_champion.name)}
+                  alt={stats.best_champion.name}
+                  onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                />
+                <div className="highlight-champion">{stats.best_champion.name}</div>
+              </div>
               <div className="highlight-stats">
                 {stats.best_champion.win_rate?.toFixed(0)}% Win Rate • {stats.best_champion.games} Games
               </div>

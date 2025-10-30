@@ -264,6 +264,20 @@
   color: #C89B3C;
 }
 
+.highlight-champion-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+.highlight-champion-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.35);
+}
+
 .highlight-stats {
   color: #fff;
   font-size: 1.1rem;
@@ -378,6 +392,11 @@
 
   .highlight-champion {
     font-size: 24px;
+  }
+
+  .highlight-champion-img {
+    width: 36px;
+    height: 36px;
   }
 }
 
