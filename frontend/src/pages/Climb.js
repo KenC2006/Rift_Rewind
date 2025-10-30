@@ -38,8 +38,6 @@ function Climb() {
         </div>
         <div className="header-stats">
           <div className="quick-stat">
-            <span className="stat-label">Current Rank</span>
-            <span className="stat-value">{playerData.player.rank || 'Unranked'}</span>
           </div>
           <div className="quick-stat">
             <span className="stat-label">Win Rate</span>
