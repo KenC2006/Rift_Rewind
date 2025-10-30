@@ -35,7 +35,7 @@ function Stats() {
   return (
     <div className="stats-page">
       <div className="stats-header">
-        <h2>Performance Analysis</h2>
+        <h2><span className="title-gradient">Your Year on the Rift</span></h2>
         <p>Season statistics and insights</p>
       </div>
 

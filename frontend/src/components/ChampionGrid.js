@@ -1,4 +1,5 @@
 import React from 'react';
+import { FiAward } from 'react-icons/fi';
 import './ChampionGrid.css';
 
 const ChampionGrid = ({ champions }) => {
@@ -23,7 +24,12 @@ const ChampionGrid = ({ champions }) => {
 
   return (
     <div className="champion-grid-container">
-      <h2 className="section-title">Champion Mastery</h2>
+      <div className="champion-header">
+        <h2 className="champion-title">
+          <FiAward className="title-icon" size={36} />
+          Champion Mastery
+        </h2>
+      </div>
       <div className="champion-grid">
         {championArray.map((champ, index) => (
           <div
@@ -52,7 +58,7 @@ const ChampionGrid = ({ champions }) => {
                   <span
                     className="stat-value"
                     style={{
-                      color: champ.winRate >= 50 ? '#00c853' : '#ff5252'
+                      color: champ.winRate >= 50 ? '#4CAF50' : '#EF5350'
                     }}
                   >
                     {champ.winRate}%

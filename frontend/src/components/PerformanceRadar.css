@@ -1,48 +1,71 @@
 .performance-radar {
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-  border-radius: 16px;
+  background: rgba(15, 25, 45, 0.4);
+  border: 1px solid rgba(200, 155, 60, 0.15);
+  border-radius: 8px;
   padding: 24px;
   margin: 20px 0;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  transition: all 0.3s ease;
   text-align: center;
+}
+
+.performance-radar:hover {
+  border-color: rgba(200, 155, 60, 0.5);
+  background: rgba(15, 25, 45, 0.6);
+  box-shadow: 0 0 20px rgba(200, 155, 60, 0.2);
 }
 
 .chart-title {
-  color: #fff;
-  font-size: 20px;
-  font-weight: 700;
-  margin: 0 0 8px 0;
-  text-transform: uppercase;
+  font-size: 2rem;
+  font-weight: 800;
+  margin: 0 0 12px 0;
+  color: #F0E6D2;
+  text-align: center;
+  text-transform: none;
   letter-spacing: 1px;
+  line-height: 1.2;
 }
 
 .performance-radar .chart-subtitle {
-  color: #999;
-  font-size: 13px;
+  color: #9B9B9B;
+  font-size: 0.8rem;
   text-align: center;
-  margin: 0 0 16px 0;
+  margin: 0 0 20px 0;
+  font-weight: 500;
+  letter-spacing: 1px;
 }
 
 .chart-legend {
   display: flex;
   justify-content: center;
   gap: 24px;
-  margin-bottom: 16px;
+  margin-bottom: 24px;
+  padding: 12px;
 }
 
 .legend-item {
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #ccc;
-  font-size: 13px;
+  color: #8A8A8A;
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 8px 16px;
+  background: rgba(15, 25, 45, 0.4);
+  border: 1px solid rgba(200, 155, 60, 0.15);
+  border-radius: 20px;
+  transition: all 0.3s ease;
+}
+
+.legend-item:hover {
+  border-color: rgba(200, 155, 60, 0.4);
+  background: rgba(15, 25, 45, 0.6);
+  box-shadow: 0 0 12px rgba(200, 155, 60, 0.15);
 }
 
 .legend-color {
   width: 20px;
   height: 4px;
   border-radius: 2px;
-  box-shadow: 0 0 8px currentColor;
 }
 
 .performance-radar svg {

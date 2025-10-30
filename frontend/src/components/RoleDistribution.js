@@ -11,13 +11,13 @@ const RoleDistribution = ({ rolesPlayed }) => {
     // Clear previous chart
     d3.select(svgRef.current).selectAll('*').remove();
 
-    // Role colors (standard League colors)
+    // Role colors (softer, more aesthetically pleasing palette)
     const roleColors = {
-      TOP: '#ff6b6b',
-      JUNGLE: '#4ecdc4',
-      MIDDLE: '#45b7d1',
-      BOTTOM: '#f9ca24',
-      SUPPORT: '#95e1d3'
+      TOP: '#FF6B6B',      // Soft coral red
+      JUNGLE: '#51CF66',   // Soft mint green
+      MIDDLE: '#4DABF7',   // Soft sky blue
+      BOTTOM: '#FFA94D',   // Soft peach orange
+      SUPPORT: '#B197FC'   // Soft lavender purple
     };
 
     // Role icons/emojis
@@ -73,15 +73,16 @@ const RoleDistribution = ({ rolesPlayed }) => {
       .append('g')
       .attr('class', 'slice');
 
-    slices.append('path')
+    const paths = slices.append('path')
       .attr('d', arc)
       .attr('fill', d => d.data.color)
       .attr('stroke', '#1a1a2e')
-      .attr('stroke-width', 3)
-      .style('opacity', 0.85)
-      .style('filter', d => `drop-shadow(0 0 8px ${d.data.color})`)
+      .attr('stroke-width', 2)
+      .style('opacity', 0)
+      .style('filter', d => `drop-shadow(0 0 6px ${d.data.color}30)`)
       .style('cursor', 'pointer')
-      .each(function(d) { this._current = d; }) // Store the initial angles
+      .style('transform', 'scale(0)')
+      .style('transform-origin', 'center')
       .on('mouseover', function(event, d) {
         d3.select(this)
           .transition()
@@ -94,7 +95,6 @@ const RoleDistribution = ({ rolesPlayed }) => {
           .style('opacity', 1)
           .html(`
             <div style="text-align: center;">
-              <div style="font-size: 24px;">${d.data.icon}</div>
               <strong>${d.data.role}</strong><br/>
               ${d.data.games} games (${((d.data.games / total) * 100).toFixed(1)}%)
             </div>
@@ -107,21 +107,19 @@ const RoleDistribution = ({ rolesPlayed }) => {
           .transition()
           .duration(200)
           .attr('d', arc)
-          .style('opacity', 0.85);
+          .style('opacity', 0.9);
 
         tooltip.style('opacity', 0);
       });
 
-    // Animate pie chart entrance
-    slices.selectAll('path')
+    // Animate pie chart entrance with scale and fade
+    paths
       .transition()
-      .duration(1000)
-      .attrTween('d', function(d) {
-        const interpolate = d3.interpolate({ startAngle: 0, endAngle: 0 }, d);
-        return function(t) {
-          return arc(interpolate(t));
-        };
-      });
+      .duration(800)
+      .delay((d, i) => i * 150)
+      .ease(d3.easeCubicOut)
+      .style('opacity', 0.9)
+      .style('transform', 'scale(1)');
 
     // Add percentage labels on slices
     slices.append('text')
@@ -188,20 +186,20 @@ const RoleDistribution = ({ rolesPlayed }) => {
 
   return (
     <div className="role-distribution">
-      <h3 className="chart-title">Role Distribution</h3>
+      <h3 className="chart-title" style={{ fontSize: '2rem', fontWeight: 800, letterSpacing: '1px', color: '#F0E6D2' }}>Role Distribution</h3>
       <svg ref={svgRef}></svg>
       <div className="role-legend">
         {rolesPlayed && Object.entries(rolesPlayed)
           .sort((a, b) => b[1] - a[1])
           .map(([role, games]) => (
             <div key={role} className="legend-item">
-              <span className="legend-dot" style={{ 
+              <span className="legend-dot" style={{
                 background: {
-                  TOP: '#ff6b6b',
-                  JUNGLE: '#4ecdc4',
-                  MIDDLE: '#45b7d1',
-                  BOTTOM: '#f9ca24',
-                  SUPPORT: '#95e1d3'
+                  TOP: '#FF6B6B',
+                  JUNGLE: '#51CF66',
+                  MIDDLE: '#4DABF7',
+                  BOTTOM: '#FFA94D',
+                  SUPPORT: '#B197FC'
                 }[role] || '#888'
               }}></span>
               <span className="legend-label">{role}</span>

@@ -1,10 +1,34 @@
 .objective-participation {
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-  border-radius: 16px;
+  background: rgba(15, 25, 45, 0.4);
+  border: 1px solid rgba(200, 155, 60, 0.15);
+  border-radius: 8px;
   padding: 24px;
   margin: 20px 0;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  transition: all 0.3s ease;
   text-align: center;
+}
+
+.objective-participation:hover {
+  border-color: rgba(200, 155, 60, 0.5);
+  background: rgba(15, 25, 45, 0.6);
+  box-shadow: 0 0 20px rgba(200, 155, 60, 0.2);
+}
+
+.objective-participation .chart-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #F0E6D2;
+  margin: 0 0 8px 0;
+  letter-spacing: 1px;
+  line-height: 1.2;
+}
+
+.objective-participation .chart-subtitle {
+  color: #9B9B9B;
+  font-size: 0.8rem;
+  margin: 0 0 20px 0;
+  font-weight: 500;
+  letter-spacing: 1px;
 }
 
 .objective-participation svg {
@@ -15,23 +39,42 @@
 .objective-participation .chart-legend {
   display: flex;
   justify-content: center;
-  gap: 24px;
-  margin: 12px 0;
+  gap: 16px;
+  margin: 12px 0 20px 0;
+}
+
+.objective-participation .legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #8A8A8A;
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 8px 16px;
+  background: rgba(15, 25, 45, 0.4);
+  border: 1px solid rgba(200, 155, 60, 0.15);
+  border-radius: 20px;
+  transition: all 0.3s ease;
+}
+
+.objective-participation .legend-item:hover {
+  border-color: rgba(200, 155, 60, 0.4);
+  background: rgba(15, 25, 45, 0.6);
+  box-shadow: 0 0 12px rgba(200, 155, 60, 0.15);
 }
 
 .objective-participation .legend-box {
   width: 20px;
-  height: 12px;
+  height: 4px;
   border-radius: 2px;
 }
 
 .objective-participation .legend-box.player {
-  background: linear-gradient(90deg, #e74c3c 0%, #9b59b6 50%, #3498db 100%);
-  box-shadow: 0 0 8px rgba(52, 152, 219, 0.5);
+  background: linear-gradient(90deg, #9B59B6 0%, #6C63FF 50%, #3498DB 100%);
 }
 
 .objective-participation .legend-box.benchmark {
-  background: #ffc107;
+  background: #C89B3C;
   opacity: 0.7;
 }
 

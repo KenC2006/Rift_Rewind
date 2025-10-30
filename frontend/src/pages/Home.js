@@ -5,10 +5,18 @@ import Loading from '../components/Loading';
 import { analyzePlayer } from '../services/api';
 import { useNavigate } from 'react-router-dom';
 import { usePlayer } from '../context/PlayerContext';
+import poroCoolGuy from '../graphics/Poro_sticker_coolguy.webp';
+import poroCry from '../graphics/Poro_sticker_cry.webp';
+import poroAngry from '../graphics/Poro_sticker_angry.webp';
+import poroBlush from '../graphics/Poro_sticker_blush.webp';
+import poroLaugh from '../graphics/Poro_sticker_laugh.webp';
+import poroSleepy from '../graphics/Poro_sticker_sleepy.webp';
+import poroQuestion from '../graphics/Poro_sticker_question.webp';
+import poroSad from '../graphics/Poro_sticker_sad.webp';
 
 function Home() {
   const navigate = useNavigate();
-  const { loading, error, setLoading, setError, updatePlayerData } = usePlayer();
+  const { loading, error, setLoading, setError, updatePlayerData, playerData } = usePlayer();
 
   const handleSearch = async (riotId) => {
     setLoading(true);
@@ -20,8 +28,6 @@ function Home() {
       if (result.success) {
         // Update global player data
         updatePlayerData(result.data);
-        // Navigate to stats page
-        navigate('/stats');
       } else {
         setError(result.error || 'Failed to analyze player');
       }
@@ -43,6 +49,16 @@ function Home() {
         <div className="hero-background">
           <div className="hero-grid"></div>
           <div className="hero-glow"></div>
+          <div className="poro-container">
+            <img src={poroCoolGuy} alt="poro" className="poro" />
+            <img src={poroCry} alt="poro" className="poro" />
+            <img src={poroAngry} alt="poro" className="poro" />
+            <img src={poroBlush} alt="poro" className="poro" />
+            <img src={poroLaugh} alt="poro" className="poro" />
+            <img src={poroSleepy} alt="poro" className="poro" />
+            <img src={poroQuestion} alt="poro" className="poro" />
+            <img src={poroSad} alt="poro" className="poro" />
+          </div>
         </div>
 
         <div className="hero-content">
@@ -53,7 +69,8 @@ function Home() {
 
           <h1 className="main-title">
             Rift Rewind
-            <span className="title-gradient"> One Year Of League</span>
+            <br />
+            <span className="title-gradient">One Year Of League</span>
           </h1>
 
           <p className="hero-description">
@@ -81,26 +98,21 @@ function Home() {
             {loading && <Loading />}
           </div>
 
-          <div className="trust-indicators">
-            <div className="indicator">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <polyline points="20 6 9 17 4 12"/>
-              </svg>
-              <span>Official Riot API</span>
+          {/* Stats Ready Button - Shows after analysis completes */}
+          {playerData && !loading && (
+            <div className="stats-ready-wrapper">
+              <button className="view-stats-button" onClick={() => navigate('/stats')}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M3 3v18h18"/>
+                  <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"/>
+                </svg>
+                <span>View Your Stats</span>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <polyline points="9 18 15 12 9 6"/>
+                </svg>
+              </button>
             </div>
-            <div className="indicator">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <polyline points="20 6 9 17 4 12"/>
-              </svg>
-              <span>AI-Powered Insights</span>
-            </div>
-            <div className="indicator">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <polyline points="20 6 9 17 4 12"/>
-              </svg>
-              <span>Privacy Focused</span>
-            </div>
-          </div>
+          )}
         </div>
       </div>
 

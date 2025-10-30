@@ -20,7 +20,15 @@ const PerformanceRadar = ({ stats }) => {
       SUPPORT: { csPerMin: 2.0, kda: 3.0, vision: 25, objParticipation: 0.65, killParticipation: 0.68 }
     };
 
-    const benchmark = roleBenchmarks[stats.primary_role] || roleBenchmarks.MIDDLE;
+    // Calculate average benchmarks across all roles
+    const roles = Object.values(roleBenchmarks);
+    const benchmark = {
+      csPerMin: roles.reduce((sum, r) => sum + r.csPerMin, 0) / roles.length,
+      kda: roles.reduce((sum, r) => sum + r.kda, 0) / roles.length,
+      vision: roles.reduce((sum, r) => sum + r.vision, 0) / roles.length,
+      objParticipation: roles.reduce((sum, r) => sum + r.objParticipation, 0) / roles.length,
+      killParticipation: roles.reduce((sum, r) => sum + r.killParticipation, 0) / roles.length
+    };
 
     // Calculate normalized scores (0-100 scale)
     const playerData = [
@@ -52,11 +60,11 @@ const PerformanceRadar = ({ stats }) => {
     ];
 
     const benchmarkData = [
-      { axis: 'CS/min', value: 100, raw: benchmark.csPerMin },
-      { axis: 'KDA', value: 100, raw: benchmark.kda },
-      { axis: 'Vision', value: 100, raw: benchmark.vision },
-      { axis: 'Objectives', value: 100, raw: benchmark.objParticipation },
-      { axis: 'Kill Part.', value: 100, raw: (benchmark.killParticipation * 100).toFixed(0) + '%' }
+      { axis: 'CS/min', value: 100, raw: benchmark.csPerMin.toFixed(1) },
+      { axis: 'KDA', value: 100, raw: benchmark.kda.toFixed(2) },
+      { axis: 'Vision', value: 100, raw: benchmark.vision.toFixed(1) },
+      { axis: 'Objectives', value: 100, raw: benchmark.objParticipation.toFixed(2) },
+      { axis: 'Kill Part.', value: 100, raw: (benchmark.killParticipation * 100).toFixed(1) + '%' }
     ];
 
     // Chart configuration
@@ -139,9 +147,9 @@ const PerformanceRadar = ({ stats }) => {
       .datum(benchmarkData)
       .attr('d', benchmarkRadarLine)
       .attr('class', 'radar-area-benchmark')
-      .style('fill', '#ffc107')
+      .style('fill', '#C89B3C')
       .style('fill-opacity', 0.2)
-      .style('stroke', '#ffc107')
+      .style('stroke', '#C89B3C')
       .style('stroke-width', '2px');
 
     // Draw player performance area
@@ -154,11 +162,11 @@ const PerformanceRadar = ({ stats }) => {
       .datum(playerData)
       .attr('d', radarLine)
       .attr('class', 'radar-area-player')
-      .style('fill', '#00d4ff')
+      .style('fill', '#9B59B6')
       .style('fill-opacity', 0.3)
-      .style('stroke', '#00d4ff')
+      .style('stroke', '#9B59B6')
       .style('stroke-width', '3px')
-      .style('filter', 'drop-shadow(0 0 8px #00d4ff)');
+      .style('filter', 'drop-shadow(0 0 8px #9B59B6)');
 
     // Animate the player path
     const totalLength = playerPath.node().getTotalLength();
@@ -179,10 +187,10 @@ const PerformanceRadar = ({ stats }) => {
       .attr('cx', (d, i) => rScale(d.value) * Math.cos(angleSlice * i - Math.PI / 2))
       .attr('cy', (d, i) => rScale(d.value) * Math.sin(angleSlice * i - Math.PI / 2))
       .attr('r', 0)
-      .style('fill', '#00d4ff')
+      .style('fill', '#9B59B6')
       .style('stroke', '#fff')
       .style('stroke-width', '2px')
-      .style('filter', 'drop-shadow(0 0 4px #00d4ff)')
+      .style('filter', 'drop-shadow(0 0 4px #9B59B6)')
       .transition()
       .delay((d, i) => i * 100 + 1000)
       .duration(300)
@@ -202,6 +210,25 @@ const PerformanceRadar = ({ stats }) => {
       .style('opacity', 0)
       .style('z-index', 1000);
 
+    // Add benchmark dots (for showing benchmark values)
+    const benchmarkDots = g.selectAll('.benchmark-dot')
+      .data(benchmarkData)
+      .enter()
+      .append('circle')
+      .attr('class', 'benchmark-dot')
+      .attr('cx', (d, i) => rScale(d.value) * Math.cos(angleSlice * i - Math.PI / 2))
+      .attr('cy', (d, i) => rScale(d.value) * Math.sin(angleSlice * i - Math.PI / 2))
+      .attr('r', 0)
+      .style('fill', '#C89B3C')
+      .style('stroke', '#fff')
+      .style('stroke-width', '2px')
+      .style('filter', 'drop-shadow(0 0 4px #C89B3C)')
+      .style('cursor', 'pointer')
+      .transition()
+      .delay((d, i) => i * 100 + 1200)
+      .duration(300)
+      .attr('r', 4);
+
     g.selectAll('.radar-dot')
       .on('mouseover', function(event, d) {
         d3.select(this)
@@ -209,9 +236,14 @@ const PerformanceRadar = ({ stats }) => {
           .duration(200)
           .attr('r', 8);
 
+        const benchmarkValue = benchmarkData.find(b => b.axis === d.axis);
         tooltip
           .style('opacity', 1)
-          .html(`<strong>${d.axis}</strong><br/>Value: ${d.raw}`)
+          .html(`
+            <strong>${d.axis}</strong><br/>
+            <span style="color: #9B59B6;">Your Value: ${d.raw}</span><br/>
+            <span style="color: #C89B3C;">Avg Benchmark: ${benchmarkValue.raw}</span>
+          `)
           .style('left', (event.pageX + 10) + 'px')
           .style('top', (event.pageY - 10) + 'px');
       })
@@ -220,6 +252,28 @@ const PerformanceRadar = ({ stats }) => {
           .transition()
           .duration(200)
           .attr('r', 5);
+
+        tooltip.style('opacity', 0);
+      });
+
+    g.selectAll('.benchmark-dot')
+      .on('mouseover', function(event, d) {
+        d3.select(this)
+          .transition()
+          .duration(200)
+          .attr('r', 6);
+
+        tooltip
+          .style('opacity', 1)
+          .html(`<strong>${d.axis}</strong><br/><span style="color: #C89B3C;">Avg Benchmark: ${d.raw}</span>`)
+          .style('left', (event.pageX + 10) + 'px')
+          .style('top', (event.pageY - 10) + 'px');
+      })
+      .on('mouseout', function() {
+        d3.select(this)
+          .transition()
+          .duration(200)
+          .attr('r', 4);
 
         tooltip.style('opacity', 0);
       });
@@ -234,15 +288,15 @@ const PerformanceRadar = ({ stats }) => {
   return (
     <div className="performance-radar">
       <h3 className="chart-title">Performance Radar</h3>
-      <p className="chart-subtitle">Compared to {stats.primary_role} benchmarks</p>
+      <p className="chart-subtitle">Compared to average benchmarks across all roles</p>
       <div className="chart-legend">
         <div className="legend-item">
-          <span className="legend-color" style={{ background: '#00d4ff' }}></span>
+          <span className="legend-color" style={{ background: '#9B59B6' }}></span>
           <span>Your Performance</span>
         </div>
         <div className="legend-item">
-          <span className="legend-color" style={{ background: '#ffc107' }}></span>
-          <span>{stats.primary_role} Benchmark</span>
+          <span className="legend-color" style={{ background: '#C89B3C' }}></span>
+          <span>Average Benchmark</span>
         </div>
       </div>
       <svg ref={svgRef}></svg>

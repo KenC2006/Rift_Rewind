@@ -1,52 +1,72 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PerformanceRadar from './PerformanceRadar';
 import TeamContribution from './TeamContribution';
 import RoleDistribution from './RoleDistribution';
 import ObjectiveParticipation from './ObjectiveParticipation';
 import KDAScatter from './KDAScatter';
+import { FiBarChart2, FiTrendingUp, FiDollarSign, FiZap, FiEye, FiTarget, FiAward, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import './VisualizationDashboard.css';
 
 const VisualizationDashboard = ({ stats }) => {
+  const [currentChart, setCurrentChart] = useState(0);
+
   if (!stats) return null;
+
+  const charts = [
+    { component: <PerformanceRadar stats={stats} />, name: 'Performance Radar' },
+    { component: <TeamContribution stats={stats} />, name: 'Team Contribution' },
+    { component: <RoleDistribution rolesPlayed={stats.roles_played} />, name: 'Role Distribution' },
+    { component: <ObjectiveParticipation stats={stats} />, name: 'Objective Participation' },
+    { component: <KDAScatter champions={stats.champions_played} />, name: 'Champion Performance Map' }
+  ];
+
+  const nextChart = () => {
+    setCurrentChart((prev) => (prev + 1) % charts.length);
+  };
+
+  const prevChart = () => {
+    setCurrentChart((prev) => (prev - 1 + charts.length) % charts.length);
+  };
 
   return (
     <div className="visualization-dashboard">
       <div className="dashboard-header">
         <h2 className="dashboard-title">
-          <span className="title-icon">📊</span>
+          <FiBarChart2 className="title-icon" size={36} />
           Performance Analytics
         </h2>
       </div>
 
-      {/* Top Row - Performance Radar & Team Contribution */}
-      <div className="dashboard-row two-columns">
-        <div className="dashboard-col">
-          <PerformanceRadar stats={stats} />
-        </div>
-        <div className="dashboard-col">
-          <TeamContribution stats={stats} />
-        </div>
-      </div>
+      {/* Chart Carousel */}
+      <div className="chart-carousel">
+        <button className="carousel-arrow carousel-arrow-left" onClick={prevChart}>
+          <FiChevronLeft size={32} />
+        </button>
 
-      {/* Second Row - Role Distribution & Objective Participation */}
-      <div className="dashboard-row two-columns">
-        <div className="dashboard-col">
-          <RoleDistribution rolesPlayed={stats.roles_played} />
+        <div className="carousel-content">
+          <div className="carousel-chart">
+            {charts[currentChart].component}
+          </div>
+          <div className="carousel-indicators">
+            {charts.map((_, index) => (
+              <button
+                key={index}
+                className={`indicator ${index === currentChart ? 'active' : ''}`}
+                onClick={() => setCurrentChart(index)}
+              />
+            ))}
+          </div>
         </div>
-        <div className="dashboard-col">
-          <ObjectiveParticipation stats={stats} />
-        </div>
-      </div>
 
-      {/* Third Row - Full Width KDA Scatter Plot */}
-      <div className="dashboard-row full-width">
-        <KDAScatter champions={stats.champions_played} />
+        <button className="carousel-arrow carousel-arrow-right" onClick={nextChart}>
+          <FiChevronRight size={32} />
+        </button>
       </div>
 
       {/* Stats Summary Cards */}
       <div className="dashboard-row stats-cards">
         <div className="stat-card-viz">
-          <div className="stat-icon-viz">📈</div>
+          <FiTrendingUp className="stat-icon-viz" size={32} />
           <div className="stat-content-viz">
             <div className="stat-value-viz">{stats.cs_per_min?.toFixed(1)}</div>
             <div className="stat-label-viz">CS per Minute</div>
@@ -55,7 +75,7 @@ const VisualizationDashboard = ({ stats }) => {
         </div>
 
         <div className="stat-card-viz">
-          <div className="stat-icon-viz">💰</div>
+          <FiDollarSign className="stat-icon-viz" size={32} />
           <div className="stat-content-viz">
             <div className="stat-value-viz">{stats.gold_per_min?.toFixed(2)}</div>
             <div className="stat-label-viz">Gold per Minute</div>
@@ -64,7 +84,7 @@ const VisualizationDashboard = ({ stats }) => {
         </div>
 
         <div className="stat-card-viz">
-          <div className="stat-icon-viz">💥</div>
+          <FiZap className="stat-icon-viz" size={32} />
           <div className="stat-content-viz">
             <div className="stat-value-viz">{stats.damage_per_min?.toFixed(2)}</div>
             <div className="stat-label-viz">Damage per Minute</div>
@@ -73,7 +93,7 @@ const VisualizationDashboard = ({ stats }) => {
         </div>
 
         <div className="stat-card-viz">
-          <div className="stat-icon-viz">👁️</div>
+          <FiEye className="stat-icon-viz" size={32} />
           <div className="stat-content-viz">
             <div className="stat-value-viz">{stats.avg_vision_score?.toFixed(1)}</div>
             <div className="stat-label-viz">Vision Score</div>
@@ -82,7 +102,7 @@ const VisualizationDashboard = ({ stats }) => {
         </div>
 
         <div className="stat-card-viz">
-          <div className="stat-icon-viz">🎯</div>
+          <FiTarget className="stat-icon-viz" size={32} />
           <div className="stat-content-viz">
             <div className="stat-value-viz">{stats.avg_kill_participation?.toFixed(0)}%</div>
             <div className="stat-label-viz">Kill Participation</div>
@@ -95,7 +115,7 @@ const VisualizationDashboard = ({ stats }) => {
       {stats.best_champion && (
         <div className="best-champion-highlight">
           <div className="highlight-content">
-            <div className="highlight-icon">🏆</div>
+            <FiAward className="highlight-icon" size={48} />
             <div className="highlight-text">
               <div className="highlight-title">Your Best Champion</div>
               <div className="highlight-champion">{stats.best_champion.name}</div>

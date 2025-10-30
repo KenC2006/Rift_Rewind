@@ -20,7 +20,13 @@ const ObjectiveParticipation = ({ stats }) => {
       SUPPORT: { dragons: 0.85, barons: 0.13, turrets: 1.9 }
     };
 
-    const benchmark = roleBenchmarks[stats.primary_role] || roleBenchmarks.MIDDLE;
+    // Calculate average benchmarks across all roles
+    const roles = Object.values(roleBenchmarks);
+    const benchmark = {
+      dragons: roles.reduce((sum, r) => sum + r.dragons, 0) / roles.length,
+      barons: roles.reduce((sum, r) => sum + r.barons, 0) / roles.length,
+      turrets: roles.reduce((sum, r) => sum + r.turrets, 0) / roles.length
+    };
 
     // Prepare data
     const data = [
@@ -28,22 +34,19 @@ const ObjectiveParticipation = ({ stats }) => {
         objective: 'Dragons',
         player: stats.avg_dragons || 0,
         benchmark: benchmark.dragons,
-        icon: '🐉',
-        color: '#e74c3c'
+        icon: '🐉'
       },
       {
         objective: 'Barons',
         player: stats.avg_barons || 0,
         benchmark: benchmark.barons,
-        icon: '👹',
-        color: '#9b59b6'
+        icon: '👹'
       },
       {
         objective: 'Turrets',
         player: stats.avg_turrets || 0,
         benchmark: benchmark.turrets,
-        icon: '🗼',
-        color: '#3498db'
+        icon: '🗼'
       }
     ];
 
@@ -110,9 +113,9 @@ const ObjectiveParticipation = ({ stats }) => {
       .attr('height', 0)
       .attr('rx', 4)
       .attr('ry', 4)
-      .style('fill', d => d.color)
+      .style('fill', '#9B59B6')
       .style('opacity', 0.9)
-      .style('filter', d => `drop-shadow(0 0 6px ${d.color})`)
+      .style('filter', 'drop-shadow(0 0 6px #9B59B6)')
       .transition()
       .duration(1000)
       .delay((d, i) => i * 200)
@@ -128,7 +131,7 @@ const ObjectiveParticipation = ({ stats }) => {
       .attr('height', 0)
       .attr('rx', 4)
       .attr('ry', 4)
-      .style('fill', '#ffc107')
+      .style('fill', '#C89B3C')
       .style('opacity', 0.7)
       .transition()
       .duration(1000)
@@ -158,7 +161,7 @@ const ObjectiveParticipation = ({ stats }) => {
       .attr('x', x1('benchmark') + x1.bandwidth() / 2)
       .attr('y', d => y(d.benchmark) - 5)
       .attr('text-anchor', 'middle')
-      .style('fill', '#ffc107')
+      .style('fill', '#C89B3C')
       .style('font-size', '12px')
       .style('font-weight', '700')
       .style('opacity', 0)
@@ -176,18 +179,10 @@ const ObjectiveParticipation = ({ stats }) => {
     data.forEach((d, i) => {
       const xPos = x0(d.objective) + x0.bandwidth() / 2;
 
-      // Icon
-      xAxis.append('text')
-        .attr('x', xPos)
-        .attr('y', 20)
-        .attr('text-anchor', 'middle')
-        .style('font-size', '24px')
-        .text(d.icon);
-
       // Label
       xAxis.append('text')
         .attr('x', xPos)
-        .attr('y', 48)
+        .attr('y', 25)
         .attr('text-anchor', 'middle')
         .style('fill', '#fff')
         .style('font-size', '13px')
@@ -250,7 +245,7 @@ const ObjectiveParticipation = ({ stats }) => {
   return (
     <div className="objective-participation">
       <h3 className="chart-title">Objective Participation</h3>
-      <p className="chart-subtitle">Per Game Average vs {stats.primary_role} Benchmark</p>
+      <p className="chart-subtitle">Per Game Average vs Average Benchmark</p>
       <div className="chart-legend">
         <div className="legend-item">
           <span className="legend-box player"></span>
@@ -258,7 +253,7 @@ const ObjectiveParticipation = ({ stats }) => {
         </div>
         <div className="legend-item">
           <span className="legend-box benchmark"></span>
-          <span>{stats.primary_role} Benchmark</span>
+          <span>Average Benchmark</span>
         </div>
       </div>
       <svg ref={svgRef}></svg>

@@ -4,6 +4,10 @@ import './PlayerCard.css';
 const PlayerCard = ({ player }) => {
   const iconUrl = `https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/${player.profileIconId}.png`;
 
+  // Get rank data if available
+  const rank = player.rank;
+  const hasRank = rank && rank.tier;
+
   return (
     <div className="player-card">
       <div className="player-banner">
@@ -24,6 +28,13 @@ const PlayerCard = ({ player }) => {
             <span className="player-tag">#{player.tagLine}</span>
           </h2>
           <p className="player-subtitle">2024 Year in Review</p>
+          {hasRank && (
+            <div className="rank-display">
+              <span className="rank-tier">{rank.tier} {rank.division}</span>
+              <span className="rank-lp">{rank.lp} LP</span>
+              <span className="rank-wr">{rank.wins}W {rank.losses}L</span>
+            </div>
+          )}
         </div>
       </div>
     </div>

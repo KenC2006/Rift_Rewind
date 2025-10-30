@@ -1,10 +1,17 @@
 .role-distribution {
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-  border-radius: 16px;
+  background: rgba(15, 25, 45, 0.4);
+  border: 1px solid rgba(200, 155, 60, 0.15);
+  border-radius: 8px;
   padding: 24px;
   margin: 20px 0;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  transition: all 0.3s ease;
   text-align: center;
+}
+
+.role-distribution:hover {
+  border-color: rgba(200, 155, 60, 0.5);
+  background: rgba(15, 25, 45, 0.6);
+  box-shadow: 0 0 20px rgba(200, 155, 60, 0.2);
 }
 
 .role-distribution svg {
@@ -36,6 +43,17 @@
   gap: 8px;
   color: #ccc;
   font-size: 13px;
+  padding: 8px 16px;
+  background: rgba(15, 25, 45, 0.4);
+  border: 1px solid rgba(200, 155, 60, 0.15);
+  border-radius: 20px;
+  transition: all 0.3s ease;
+}
+
+.role-legend .legend-item:hover {
+  border-color: rgba(200, 155, 60, 0.4);
+  background: rgba(15, 25, 45, 0.6);
+  box-shadow: 0 0 12px rgba(200, 155, 60, 0.15);
 }
 
 .legend-dot {

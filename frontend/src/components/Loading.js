@@ -1,4 +1,6 @@
 import React from 'react';
+import { FiBarChart2, FiCpu } from 'react-icons/fi';
+import { GiGamepad } from 'react-icons/gi';
 import './Loading.css';
 
 const Loading = () => {
@@ -9,15 +11,15 @@ const Loading = () => {
         <h2 className="loading-text">Analyzing Your Legend...</h2>
         <div className="loading-steps">
           <div className="step">
-            <span className="step-icon">📊</span>
+            <FiBarChart2 className="step-icon" size={24} />
             <span>Fetching match history</span>
           </div>
           <div className="step">
-            <span className="step-icon">🎮</span>
+            <GiGamepad className="step-icon" size={24} />
             <span>Processing statistics</span>
           </div>
           <div className="step">
-            <span className="step-icon">🤖</span>
+            <FiCpu className="step-icon" size={24} />
             <span>Generating AI insights</span>
           </div>
         </div>

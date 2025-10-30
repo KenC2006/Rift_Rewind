@@ -57,7 +57,7 @@ const KDAScatter = ({ champions }) => {
 
     const colorScale = d3.scaleSequential()
       .domain([0, 100])
-      .interpolator(d3.interpolateRgb('#ff5252', '#00c853'));
+      .interpolator(d3.interpolateRgb('#E74C3C', '#00C853'));
 
     // Add grid lines
     const gridLines = g.append('g').attr('class', 'grid');
@@ -96,7 +96,7 @@ const KDAScatter = ({ champions }) => {
       .attr('y', 0)
       .attr('width', xScale(5)) // Low deaths (0-5)
       .attr('height', height - yScale(15)) // High K+A (15+)
-      .style('fill', '#00c853')
+      .style('fill', '#C89B3C')
       .style('opacity', 0.05)
       .style('pointer-events', 'none');
 
@@ -104,7 +104,7 @@ const KDAScatter = ({ champions }) => {
       .attr('x', xScale(2.5))
       .attr('y', yScale(17))
       .attr('text-anchor', 'middle')
-      .style('fill', '#00c853')
+      .style('fill', '#C89B3C')
       .style('font-size', '11px')
       .style('opacity', 0.6)
       .text('Ideal Zone');
@@ -198,7 +198,7 @@ const KDAScatter = ({ champions }) => {
             <div style="text-align: center;">
               <strong style="font-size: 15px;">${d.name}</strong><br/>
               <div style="margin: 8px 0; padding: 8px 0; border-top: 1px solid #444; border-bottom: 1px solid #444;">
-                <div style="color: #00d4ff;">KDA: ${d.kda.toFixed(2)}</div>
+                <div style="color: #9B59B6;">KDA: ${d.kda.toFixed(2)}</div>
                 <div style="font-size: 11px; color: #999;">
                   ${d.kills.toFixed(1)} / ${d.deaths.toFixed(1)} / ${d.assists.toFixed(1)}
                 </div>
@@ -232,11 +232,11 @@ const KDAScatter = ({ champions }) => {
   return (
     <div className="kda-scatter">
       <h3 className="chart-title">Champion Performance Map</h3>
-      <p className="chart-subtitle">Bubble size = games played • Color = win rate (red → green)</p>
+      <p className="chart-subtitle">Larger bubbles = more games played | Color shows win rate: Low (red) to High (green)</p>
       <svg ref={svgRef}></svg>
       <div className="scatter-legend">
         <div className="legend-note">
-          💡 <strong>Tip:</strong> Champions in the top-left are your most efficient (low deaths, high impact)
+          <strong>Tip:</strong> Champions in the top-left are your most efficient (low deaths, high impact)
         </div>
       </div>
     </div>
