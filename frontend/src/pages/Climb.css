@@ -1,7 +1,7 @@
 .climb-page {
   min-height: 100vh;
-  padding-top: 0;
-  background: #0A1428;
+  padding-top: 80px;
+  background: linear-gradient(180deg, #0a1428 0%, #050b16 100%);
   position: relative;
   overflow-x: hidden;
   overflow-y: auto;
@@ -224,50 +224,62 @@
   overflow: hidden;
 }
 
-/* No Data State */
-.no-data-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 6rem 2rem;
+/* No Data State - Matches Stats Page Exactly */
+/* Override climb-header styles when in no-data state */
+.climb-page .climb-header:not(:has(.header-content)) {
+  padding: 4rem 2rem;
   text-align: center;
+  background: transparent;
+  border-bottom: none;
+  backdrop-filter: none;
 }
 
-.no-data-container h2 {
+.climb-page .climb-header:not(:has(.header-content))::before {
+  display: none;
+}
+
+.climb-header h2 {
+  font-size: 3rem;
+  font-weight: 700;
+  margin: 0 0 1rem 0;
   color: #fff;
-  font-size: 2rem;
-  margin-bottom: 1rem;
+  letter-spacing: -1px;
 }
 
-.no-data-container p {
+.climb-header p {
   color: #8A8A8A;
   font-size: 1.1rem;
-  margin-bottom: 2rem;
+  margin: 0;
+}
+
+.no-data-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4rem 2rem;
 }
 
 .search-button {
-  padding: 1.25rem 3rem;
+  padding: 1rem 2.5rem;
   background: linear-gradient(135deg, #C89B3C 0%, #F0E6D2 100%);
   color: #0A1428;
   border: none;
-  border-radius: 12px;
-  font-size: 1.1rem;
-  font-weight: 700;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
   text-transform: uppercase;
-  letter-spacing: 1.5px;
-  box-shadow: 0 8px 24px rgba(200, 155, 60, 0.4);
+  letter-spacing: 1px;
 }
 
 .search-button:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 36px rgba(200, 155, 60, 0.6);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(200, 155, 60, 0.3);
 }
 
 .search-button:active {
-  transform: translateY(-2px);
+  transform: translateY(0);
 }
 
 /* Responsive Design */
