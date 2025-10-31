@@ -60,15 +60,30 @@
   pointer-events: none;
   overflow: hidden;
   z-index: 0;
+  opacity: 0;
+  transition: opacity 0.6s ease-in;
+}
+
+.poro-container.loaded {
+  opacity: 1;
+}
+
+.poro-container.loading .poro {
+  animation-play-state: paused;
 }
 
 .poro {
   position: absolute;
   width: 80px;
   height: auto;
-  opacity: 0.2;
+  opacity: 0.25;
   filter: brightness(1.1);
   animation: floatPoro 20s ease-in-out infinite;
+  will-change: transform;
+  backface-visibility: hidden;
+  user-select: none;
+  pointer-events: none;
+  transform-origin: center;
 }
 
 .poro:nth-child(1) {
@@ -82,7 +97,7 @@
 .poro:nth-child(2) {
   top: 15%;
   left: 88%;
-  animation-delay: 3s;
+  animation-delay: -2s;
   animation-duration: 22s;
   width: 60px;
 }
@@ -90,7 +105,7 @@
 .poro:nth-child(3) {
   top: 35%;
   left: 5%;
-  animation-delay: 6s;
+  animation-delay: -5s;
   animation-duration: 20s;
   width: 90px;
 }
@@ -98,7 +113,7 @@
 .poro:nth-child(4) {
   top: 40%;
   left: 90%;
-  animation-delay: 9s;
+  animation-delay: -8s;
   animation-duration: 19s;
   width: 65px;
 }
@@ -106,7 +121,7 @@
 .poro:nth-child(5) {
   top: 65%;
   left: 7%;
-  animation-delay: 12s;
+  animation-delay: -11s;
   animation-duration: 21s;
   width: 85px;
 }
@@ -114,7 +129,7 @@
 .poro:nth-child(6) {
   top: 70%;
   left: 87%;
-  animation-delay: 15s;
+  animation-delay: -14s;
   animation-duration: 23s;
   width: 70px;
 }
@@ -122,7 +137,7 @@
 .poro:nth-child(7) {
   top: 88%;
   left: 12%;
-  animation-delay: 18s;
+  animation-delay: -17s;
   animation-duration: 24s;
   width: 75px;
 }
@@ -130,7 +145,7 @@
 .poro:nth-child(8) {
   top: 92%;
   left: 83%;
-  animation-delay: 21s;
+  animation-delay: -4s;
   animation-duration: 20s;
   width: 68px;
 }

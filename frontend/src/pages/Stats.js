@@ -12,8 +12,8 @@ function Stats() {
   const { playerData } = usePlayer();
 
   useEffect(() => {
-    // Scroll to top smoothly when component mounts
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Immediate scroll to top
+    window.scrollTo(0, 0);
   }, []);
 
   if (!playerData) {
@@ -34,14 +34,19 @@ function Stats() {
 
   return (
     <div className="stats-page">
-      <div className="stats-header">
-        <h2><span className="title-gradient">Your Year on the Rift</span></h2>
-        <p>Season statistics and insights</p>
+      {/* Full-width Hero Section */}
+      <div className="stats-hero">
+        <div className="hero-gradient-bg"></div>
+        <PlayerCard player={playerData.player} />
       </div>
 
-      <div className="results-container">
-        <PlayerCard player={playerData.player} />
+      {/* Analytics Dashboard - Full Width */}
+      <div className="analytics-section">
         <StatsOverview stats={playerData.stats} />
+      </div>
+
+      {/* Content Sections */}
+      <div className="content-wrapper">
         <VisualizationDashboard stats={playerData.stats} />
         <ChampionGrid champions={playerData.stats.champions_played} />
       </div>

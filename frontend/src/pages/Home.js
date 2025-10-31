@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./Home.css";
 import SearchForm from "../components/SearchForm";
 import Loading from "../components/Loading";
@@ -25,6 +25,48 @@ function Home() {
     playerData,
     clearPlayerData,
   } = usePlayer();
+
+  const [porosLoaded, setPorosLoaded] = useState(false);
+
+  // Preload all poro images before rendering
+  useEffect(() => {
+    const poroImages = [
+      poroCoolGuy,
+      poroCry,
+      poroAngry,
+      poroBlush,
+      poroLaugh,
+      poroSleepy,
+      poroQuestion,
+      poroSad
+    ];
+
+    let loadedCount = 0;
+    const imagePromises = poroImages.map((src) => {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => {
+          loadedCount++;
+          resolve();
+        };
+        img.onerror = () => {
+          loadedCount++;
+          resolve(); // Resolve even on error to not block rendering
+        };
+        img.src = src;
+      });
+    });
+
+    // Wait for all images to load
+    Promise.all(imagePromises).then(() => {
+      setPorosLoaded(true);
+    });
+  }, []);
+
+  // Scroll to top on mount
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const handleSearch = async (riotId) => {
     setLoading(true);
@@ -59,15 +101,15 @@ function Home() {
         <div className="hero-background">
           <div className="hero-grid"></div>
           <div className="hero-glow"></div>
-          <div className="poro-container">
-            <img src={poroCoolGuy} alt="poro" className="poro" />
-            <img src={poroCry} alt="poro" className="poro" />
-            <img src={poroAngry} alt="poro" className="poro" />
-            <img src={poroBlush} alt="poro" className="poro" />
-            <img src={poroLaugh} alt="poro" className="poro" />
-            <img src={poroSleepy} alt="poro" className="poro" />
-            <img src={poroQuestion} alt="poro" className="poro" />
-            <img src={poroSad} alt="poro" className="poro" />
+          <div className={`poro-container ${porosLoaded ? 'loaded' : 'loading'}`}>
+            <img src={poroCoolGuy} alt="poro" className="poro" loading="eager" />
+            <img src={poroCry} alt="poro" className="poro" loading="eager" />
+            <img src={poroAngry} alt="poro" className="poro" loading="eager" />
+            <img src={poroBlush} alt="poro" className="poro" loading="eager" />
+            <img src={poroLaugh} alt="poro" className="poro" loading="eager" />
+            <img src={poroSleepy} alt="poro" className="poro" loading="eager" />
+            <img src={poroQuestion} alt="poro" className="poro" loading="eager" />
+            <img src={poroSad} alt="poro" className="poro" loading="eager" />
           </div>
         </div>
 

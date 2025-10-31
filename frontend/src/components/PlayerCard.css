@@ -1,14 +1,15 @@
 .player-card {
-  max-width: 1200px;
-  margin: -40px auto 40px;
-  padding: 0 20px;
+  position: relative;
+  width: 100%;
+  padding: 60px 80px;
   animation: slideDown 0.6s ease-out;
+  z-index: 1;
 }
 
 @keyframes slideDown {
   from {
     opacity: 0;
-    transform: translateY(-30px);
+    transform: translateY(-20px);
   }
   to {
     opacity: 1;
@@ -19,45 +20,43 @@
 .player-banner {
   display: flex;
   align-items: center;
-  gap: 24px;
-  padding: 32px 40px;
-  background: rgba(15, 25, 45, 0.95);
-  border: 2px solid rgba(200, 155, 60, 0.15);
-  border-radius: 20px;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  gap: 32px;
+  max-width: 1600px;
+  margin: 0 auto;
   position: relative;
-}
-
-.player-banner:hover {
-  border-color: rgba(200, 155, 60, 0.5);
-  box-shadow: 0 0 20px rgba(200, 155, 60, 0.2);
 }
 
 .player-icon-wrapper {
   position: relative;
+  flex-shrink: 0;
 }
 
 .player-icon {
-  width: 80px;
-  height: 80px;
-  border-radius: 8px;
-  border: 2px solid rgba(200, 155, 60, 0.3);
+  width: 120px;
+  height: 120px;
+  border-radius: 16px;
+  border: 3px solid rgba(200, 155, 60, 0.4);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  transition: all 0.3s ease;
+}
+
+.player-icon:hover {
+  border-color: #C89B3C;
+  box-shadow: 0 8px 32px rgba(200, 155, 60, 0.3);
 }
 
 .level-badge {
   position: absolute;
-  bottom: -8px;
-  right: -8px;
-  background: rgba(200, 155, 60, 0.2);
-  color: #C89B3C;
-  font-weight: 600;
-  font-size: 0.875rem;
-  padding: 4px 10px;
-  border-radius: 4px;
-  border: 1px solid rgba(200, 155, 60, 0.3);
-  backdrop-filter: blur(10px);
+  bottom: -10px;
+  right: -10px;
+  background: linear-gradient(135deg, rgba(200, 155, 60, 0.95) 0%, rgba(240, 230, 210, 0.95) 100%);
+  color: #0a1428;
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: 2px solid rgba(200, 155, 60, 0.6);
+  box-shadow: 0 4px 12px rgba(200, 155, 60, 0.4);
 }
 
 .player-info {
@@ -65,38 +64,42 @@
 }
 
 .player-name {
-  font-size: 1.75rem;
-  font-weight: 600;
+  font-size: 2.5rem;
+  font-weight: 800;
   color: #fff;
-  margin: 0 0 8px 0;
+  margin: 0 0 12px 0;
+  letter-spacing: -1px;
+  line-height: 1.1;
 }
 
 .player-tag {
   color: #C89B3C;
-  font-weight: 600;
+  font-weight: 700;
+  opacity: 0.9;
 }
 
 .player-subtitle {
-  font-size: 0.95rem;
-  color: #8A8A8A;
-  margin: 0;
+  font-size: 1rem;
+  color: #94a3b8;
+  margin: 0 0 16px 0;
   letter-spacing: 0.5px;
   font-weight: 500;
+  text-transform: uppercase;
 }
 
 .rank-display {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 16px;
-  margin-top: 12px;
-  padding: 12px 20px;
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: 50px;
-  width: fit-content;
+  gap: 12px;
+  padding: 10px 20px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 12px;
+  border: 1px solid rgba(200, 155, 60, 0.2);
+  backdrop-filter: blur(10px);
 }
 
 .rank-tier {
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -109,7 +112,7 @@
   color: #00d4ff;
   padding: 4px 12px;
   background: rgba(0, 212, 255, 0.15);
-  border-radius: 50px;
+  border-radius: 8px;
   border: 1px solid rgba(0, 212, 255, 0.4);
 }
 
@@ -119,15 +122,13 @@
   color: #C89B3C;
   padding: 4px 12px;
   background: rgba(200, 155, 60, 0.15);
-  border-radius: 50px;
+  border-radius: 8px;
   border: 1px solid rgba(200, 155, 60, 0.4);
 }
 
-@media (max-width: 768px) {
-  .player-banner {
-    flex-direction: column;
-    text-align: center;
-    padding: 30px 20px;
+@media (max-width: 1024px) {
+  .player-card {
+    padding: 50px 40px;
   }
 
   .player-name {
@@ -138,9 +139,29 @@
     width: 100px;
     height: 100px;
   }
+}
+
+@media (max-width: 768px) {
+  .player-card {
+    padding: 40px 20px;
+  }
+
+  .player-banner {
+    flex-direction: column;
+    text-align: center;
+    gap: 20px;
+  }
+
+  .player-name {
+    font-size: 1.75rem;
+  }
+
+  .player-icon {
+    width: 100px;
+    height: 100px;
+  }
 
   .rank-display {
-    margin: 12px auto 0;
     flex-wrap: wrap;
     justify-content: center;
   }

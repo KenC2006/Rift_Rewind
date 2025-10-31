@@ -32,13 +32,17 @@ const ChatBot = ({ integrated = false }) => {
         `Ready to discuss your gameplay, ${playerName}. I can provide insights on mechanics, decision-making, champion pool, and more. What's your priority?`
       ];
       const randomWelcome = welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
-      setMessages([
-        {
-          content: randomWelcome,
-          isUser: false,
-          timestamp: new Date().toISOString()
-        }
-      ]);
+
+      // Delay welcome message to prevent initial scroll
+      setTimeout(() => {
+        setMessages([
+          {
+            content: randomWelcome,
+            isUser: false,
+            timestamp: new Date().toISOString()
+          }
+        ]);
+      }, 300);
     }
   }, [playerData]);
 
@@ -48,8 +52,13 @@ const ChatBot = ({ integrated = false }) => {
   }, [messages]);
 
   const scrollToBottom = () => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    if (messagesEndRef.current && chatContainerRef.current) {
+      // Scroll within the chat container only, not the whole page
+      messagesEndRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+        inline: 'nearest'
+      });
     }
   };
 

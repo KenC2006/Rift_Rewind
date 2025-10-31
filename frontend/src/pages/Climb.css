@@ -4,6 +4,7 @@
   background: #0A1428;
   position: relative;
   overflow-x: hidden;
+  overflow-y: auto;
 }
 
 /* Animated Background */
@@ -75,34 +76,18 @@
   justify-content: center;
   color: #C89B3C;
   flex-shrink: 0;
-  animation: iconFloat 3s ease-in-out infinite;
+  transition: all 0.3s ease;
 }
 
-@keyframes iconFloat {
-  0%, 100% {
-    transform: translateY(0) rotate(0deg);
-  }
-  50% {
-    transform: translateY(-10px) rotate(5deg);
-  }
+.header-icon:hover {
+  transform: scale(1.05);
 }
 
 .title-gradient {
-  background: linear-gradient(135deg, #C89B3C 0%, #F0E6D2 50%, #C89B3C 100%);
-  background-size: 200% 100%;
+  background: linear-gradient(135deg, #C89B3C 0%, #F0E6D2 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  animation: gradientShift 3s ease infinite;
-}
-
-@keyframes gradientShift {
-  0%, 100% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
 }
 
 .header-content p {
@@ -222,43 +207,21 @@
 /* Insights Column - Spacious */
 .insights-column {
   padding: 0;
-  animation: fadeInUp 0.8s ease-out;
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(40px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 /* Chat Column - Sticky and Prominent */
 .chat-column {
   position: sticky;
-  top: 2rem;
-  height: calc(100vh - 4rem);
+  top: 100px;
+  align-self: flex-start;
+  height: calc(100vh - 120px);
+  max-height: 800px;
   background: linear-gradient(135deg, rgba(15, 25, 45, 0.95) 0%, rgba(10, 20, 40, 0.98) 100%);
   border: 1px solid rgba(200, 155, 60, 0.3);
   border-radius: 24px;
   backdrop-filter: blur(20px);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
   overflow: hidden;
-  animation: fadeInRight 0.8s ease-out;
-}
-
-@keyframes fadeInRight {
-  from {
-    opacity: 0;
-    transform: translateX(40px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
 }
 
 /* No Data State */

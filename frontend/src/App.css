@@ -1,3 +1,12 @@
+* {
+  scroll-behavior: auto;
+}
+
+html, body {
+  overflow-x: hidden;
+  overscroll-behavior: none;
+}
+
 .App {
   min-height: 100vh;
   background: linear-gradient(180deg, #0A1428 0%, #091428 100%);

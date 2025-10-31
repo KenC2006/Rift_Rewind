@@ -1,5 +1,5 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import './App.css';
 
 // Context
@@ -14,6 +14,19 @@ import Stats from './pages/Stats';
 import Climb from './pages/Climb';
 import About from './pages/About';
 
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    // Force immediate scroll to top on route change
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }, [pathname]);
+
+  return null;
+}
+
 function App() {
   const menuItems = [
     { label: 'Home', ariaLabel: 'Go to home page', link: '/' },
@@ -25,6 +38,7 @@ function App() {
   return (
     <Router>
       <PlayerProvider>
+        <ScrollToTop />
         <div className="App">
           <StaggeredMenu
             position="right"

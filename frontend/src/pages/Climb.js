@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useLayoutEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Climb.css';
 import BentoGrid from '../components/BentoGrid';
@@ -9,9 +9,11 @@ function Climb() {
   const navigate = useNavigate();
   const { playerData } = usePlayer();
 
-  useEffect(() => {
-    // Scroll to top smoothly when component mounts
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  useLayoutEffect(() => {
+    // Force scroll to top before paint
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
   }, []);
 
   // Inventory snapshots removed from Bento; no extra sections

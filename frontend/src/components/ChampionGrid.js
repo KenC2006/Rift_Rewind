@@ -1,78 +1,247 @@
-import React from 'react';
-import { FiAward } from 'react-icons/fi';
+import React, { useState } from 'react';
+import { FiTrendingUp, FiTrendingDown, FiAward, FiTarget } from 'react-icons/fi';
+import ChampionDetail from './ChampionDetail';
 import './ChampionGrid.css';
 
 const ChampionGrid = ({ champions }) => {
-  // Convert champions object to array and sort by games played
+  const [sortBy, setSortBy] = useState('games'); // games, winRate, kda, cs
+  const [selectedChampion, setSelectedChampion] = useState(null);
+  const [viewMode, setViewMode] = useState('featured'); // featured, grid
+
+  // Convert champions object to array with all calculated stats
   const championArray = Object.entries(champions)
     .map(([name, data]) => ({
       name,
-      ...data,
-      winRate: data.games > 0 ? ((data.wins / data.games) * 100).toFixed(1) : 0,
+      games: data.games || 0,
+      wins: data.wins || 0,
+      losses: (data.games || 0) - (data.wins || 0),
+      kills: data.kills || 0,
+      deaths: data.deaths || 0,
+      assists: data.assists || 0,
+      cs: data.cs || 0,
+      winRate: data.games > 0 ? ((data.wins / data.games) * 100) : 0,
       kda: data.deaths > 0
-        ? ((data.kills + data.assists) / data.deaths).toFixed(2)
-        : (data.kills + data.assists).toFixed(2)
+        ? ((data.kills + data.assists) / data.deaths)
+        : (data.kills + data.assists),
+      avgKills: data.games > 0 ? (data.kills / data.games) : 0,
+      avgDeaths: data.games > 0 ? (data.deaths / data.games) : 0,
+      avgAssists: data.games > 0 ? (data.assists / data.games) : 0,
+      avgCS: data.games > 0 ? (data.cs / data.games) : 0
     }))
-    .sort((a, b) => b.games - a.games)
-    .slice(0, 12); // Show top 12 champions
+    .sort((a, b) => {
+      switch (sortBy) {
+        case 'winRate':
+          return b.winRate - a.winRate;
+        case 'kda':
+          return b.kda - a.kda;
+        case 'cs':
+          return b.avgCS - a.avgCS;
+        case 'games':
+        default:
+          return b.games - a.games;
+      }
+    });
+
+  // Split into featured (top 3) and rest
+  const featuredChampions = championArray.slice(0, 3);
+  const remainingChampions = championArray.slice(3);
 
   const getChampionImage = (championName) => {
-    // Format champion name for URL (remove spaces, handle special characters)
     const formattedName = championName.replace(/[^a-zA-Z]/g, '');
     return `https://ddragon.leagueoflegends.com/cdn/14.1.1/img/champion/${formattedName}.png`;
   };
 
+  const getSplashArt = (championName) => {
+    const formattedName = championName.replace(/[^a-zA-Z]/g, '');
+    return `https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${formattedName}_0.jpg`;
+  };
+
+  const getWinRateColor = (wr) => {
+    if (wr >= 55) return '#10b981';
+    if (wr >= 50) return '#3b82f6';
+    if (wr >= 45) return '#f59e0b';
+    return '#ef4444';
+  };
+
+  const getKDAColor = (kda) => {
+    if (kda >= 4) return '#10b981';
+    if (kda >= 3) return '#3b82f6';
+    if (kda >= 2) return '#f59e0b';
+    return '#ef4444';
+  };
+
+  const getPerformanceGrade = (champ) => {
+    const { winRate, kda } = champ;
+    if (winRate >= 60 && kda >= 3.5) return { grade: 'S', color: '#ffd700' };
+    if (winRate >= 55 && kda >= 3) return { grade: 'A', color: '#10b981' };
+    if (winRate >= 50 && kda >= 2.5) return { grade: 'B', color: '#3b82f6' };
+    if (winRate >= 45 && kda >= 2) return { grade: 'C', color: '#f59e0b' };
+    return { grade: 'D', color: '#ef4444' };
+  };
+
   return (
-    <div className="champion-grid-container">
-      <div className="champion-header">
-        <h2 className="champion-title">
-          <FiAward className="title-icon" size={36} />
-          Champion Mastery
-        </h2>
-      </div>
-      <div className="champion-grid">
-        {championArray.map((champ, index) => (
-          <div
-            key={champ.name}
-            className="champion-card"
-            style={{ animationDelay: `${index * 0.05}s` }}
-          >
-            <div className="champion-image-wrapper">
-              <img
-                src={getChampionImage(champ.name)}
-                alt={champ.name}
-                className="champion-image"
-                onError={(e) => {
-                  e.target.style.display = 'none';
-                }}
-              />
-              <div className="champion-overlay">
-                <div className="games-badge">{champ.games} games</div>
-              </div>
-            </div>
-            <div className="champion-info">
-              <div className="champion-name">{champ.name}</div>
-              <div className="champion-stats">
-                <div className="stat-item">
-                  <span className="stat-label">WR:</span>
-                  <span
-                    className="stat-value"
-                    style={{
-                      color: champ.winRate >= 50 ? '#4CAF50' : '#EF5350'
-                    }}
-                  >
-                    {champ.winRate}%
-                  </span>
-                </div>
-                <div className="stat-item">
-                  <span className="stat-label">KDA:</span>
-                  <span className="stat-value">{champ.kda}</span>
-                </div>
-              </div>
-            </div>
+    <div className="champion-mastery-container">
+      <div className="mastery-header">
+        <div className="mastery-title-section">
+          <h2 className="mastery-title">Champion Performance</h2>
+          <p className="mastery-subtitle">
+            Your {championArray.length} champions ranked by performance
+          </p>
+        </div>
+
+        <div className="mastery-controls">
+          <div className="mastery-sort">
+            <label>Sort by:</label>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="sort-select"
+            >
+              <option value="games">Games Played</option>
+              <option value="winRate">Win Rate</option>
+              <option value="kda">KDA Ratio</option>
+              <option value="cs">CS per Game</option>
+            </select>
           </div>
-        ))}
+        </div>
       </div>
+
+      {championArray.length === 0 ? (
+        <div className="no-champions">
+          <p>No champion data available</p>
+        </div>
+      ) : (
+        <>
+          {/* Featured Top 3 Champions */}
+          {featuredChampions.length > 0 && (
+            <div className="featured-section">
+              <div className="section-label">
+                <FiAward className="section-icon" />
+                <span>Top Performers</span>
+              </div>
+              <div className="featured-grid">
+                {featuredChampions.map((champ, index) => {
+                  const performance = getPerformanceGrade(champ);
+                  return (
+                    <div
+                      key={champ.name}
+                      className="featured-champion-card"
+                      onClick={() => setSelectedChampion({ name: champ.name, data: champ })}
+                      style={{ animationDelay: `${index * 0.1}s` }}
+                    >
+                      <div className="featured-bg">
+                        <img src={getSplashArt(champ.name)} alt={champ.name} />
+                        <div className="featured-overlay"></div>
+                      </div>
+                      <div className="featured-content">
+                        <div className="featured-rank">#{index + 1}</div>
+                        <div className="featured-grade" style={{ color: performance.color, borderColor: performance.color }}>
+                          {performance.grade}
+                        </div>
+                        <img src={getChampionImage(champ.name)} alt={champ.name} className="featured-avatar" />
+                        <h3 className="featured-name">{champ.name}</h3>
+                        <div className="featured-stats-row">
+                          <div className="featured-stat">
+                            <span className="stat-value">{champ.games}</span>
+                            <span className="stat-label">Games</span>
+                          </div>
+                          <div className="featured-stat">
+                            <span className="stat-value" style={{ color: getWinRateColor(champ.winRate) }}>
+                              {champ.winRate.toFixed(0)}%
+                            </span>
+                            <span className="stat-label">Win Rate</span>
+                          </div>
+                          <div className="featured-stat">
+                            <span className="stat-value" style={{ color: getKDAColor(champ.kda) }}>
+                              {champ.kda.toFixed(1)}
+                            </span>
+                            <span className="stat-label">KDA</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Remaining Champions Grid */}
+          {remainingChampions.length > 0 && (
+            <div className="champions-grid-section">
+              <div className="section-label">
+                <FiTarget className="section-icon" />
+                <span>Champion Pool</span>
+              </div>
+              <div className="champions-grid">
+                {remainingChampions.map((champ, index) => {
+                  const performance = getPerformanceGrade(champ);
+                  return (
+                    <div
+                      key={champ.name}
+                      className="champion-card"
+                      onClick={() => setSelectedChampion({ name: champ.name, data: champ })}
+                      style={{ animationDelay: `${(index + 3) * 0.03}s` }}
+                    >
+                      <div className="card-header">
+                        <div className="card-rank">#{index + 4}</div>
+                        <div className="card-grade" style={{ color: performance.color }}>
+                          {performance.grade}
+                        </div>
+                      </div>
+                      <div className="card-avatar-wrapper">
+                        <img
+                          src={getChampionImage(champ.name)}
+                          alt={champ.name}
+                          className="card-avatar"
+                          onError={(e) => {
+                            e.target.src = 'https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/29.png';
+                          }}
+                        />
+                      </div>
+                      <h4 className="card-name">{champ.name}</h4>
+                      <div className="card-stats">
+                        <div className="card-stat-item">
+                          <span className="card-stat-label">Games</span>
+                          <span className="card-stat-value">{champ.games}</span>
+                        </div>
+                        <div className="card-stat-item">
+                          <span className="card-stat-label">Win Rate</span>
+                          <span className="card-stat-value" style={{ color: getWinRateColor(champ.winRate) }}>
+                            {champ.winRate.toFixed(0)}%
+                          </span>
+                        </div>
+                        <div className="card-stat-item">
+                          <span className="card-stat-label">KDA</span>
+                          <span className="card-stat-value" style={{ color: getKDAColor(champ.kda) }}>
+                            {champ.kda.toFixed(1)}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="card-kda-breakdown">
+                        <span className="kda-k">{champ.avgKills.toFixed(1)}</span>
+                        <span className="kda-sep">/</span>
+                        <span className="kda-d">{champ.avgDeaths.toFixed(1)}</span>
+                        <span className="kda-sep">/</span>
+                        <span className="kda-a">{champ.avgAssists.toFixed(1)}</span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+        </>
+      )}
+
+      {/* Champion Detail Modal */}
+      {selectedChampion && (
+        <ChampionDetail
+          champion={selectedChampion.name}
+          championData={selectedChampion.data}
+          onClose={() => setSelectedChampion(null)}
+        />
+      )}
     </div>
   );
 };
