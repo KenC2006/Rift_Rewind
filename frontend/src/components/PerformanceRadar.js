@@ -327,8 +327,8 @@ const PerformanceRadar = ({ stats, player }) => {
           .style('opacity', 1)
           .html(`
             <strong>${d.axis}</strong><br/>
-            <span style="color: #9B59B6;">Your Value: ${d.raw}</span><br/>
-            <span style="color: #C89B3C;">Avg Benchmark: ${benchmarkValue.raw}</span>
+            <span style="color: #9B59B6;">Your Value: ${d.raw || 'N/A'}</span><br/>
+            <span style="color: #C89B3C;">Avg Benchmark: ${benchmarkValue?.raw || 'N/A'}</span>
           `)
           .style('left', (event.pageX + 10) + 'px')
           .style('top', (event.pageY - 10) + 'px');
@@ -351,7 +351,7 @@ const PerformanceRadar = ({ stats, player }) => {
 
         tooltip
           .style('opacity', 1)
-          .html(`<strong>${d.axis}</strong><br/><span style="color: #C89B3C;">Avg Benchmark: ${d.raw}</span>`)
+          .html(`<strong>${d.axis}</strong><br/><span style="color: #C89B3C;">Avg Benchmark: ${d.raw || 'N/A'}</span>`)
           .style('left', (event.pageX + 10) + 'px')
           .style('top', (event.pageY - 10) + 'px');
       })
