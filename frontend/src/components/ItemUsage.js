@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import ReactDOM from 'react-dom';
 import './ItemUsage.css';
 import { getItemsMapping } from '../services/api';
 
@@ -45,7 +46,8 @@ const FinalItems = ({ lists, idToName, totalMatches }) => {
 const ItemUsageModal = ({ champion, data, idToName, onClose }) => {
   if (!champion || !data) return null;
   const totalMatches = data.matches || 0;
-  return (
+  
+  const modalContent = (
     <div className="iu-modal-overlay" onClick={onClose}>
       <div className="iu-modal" onClick={(e) => e.stopPropagation()}>
         <div className="iu-modal-header">
@@ -64,6 +66,8 @@ const ItemUsageModal = ({ champion, data, idToName, onClose }) => {
       </div>
     </div>
   );
+  
+  return ReactDOM.createPortal(modalContent, document.body);
 };
 
 const ItemUsage = ({ stats }) => {
@@ -109,7 +113,7 @@ const ItemUsage = ({ stats }) => {
             onClick={() => setSelected(name)}
             aria-label={`View item usage for ${name}`}
           >
-            <img className="iu-champ-card-img" src={CHAMP_IMG(name)} alt={name} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+            <img className="iu-champ-card-img" src={CHAMP_IMG(name)} alt={name} loading="lazy" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
             <div className="iu-champ-card-name">{name}</div>
           </button>
         ))}

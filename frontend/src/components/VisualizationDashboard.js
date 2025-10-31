@@ -7,7 +7,7 @@ import KDAScatter from './KDAScatter';
 import ItemUsage from './ItemUsage';
 import './VisualizationDashboard.css';
 
-const VisualizationDashboard = ({ stats }) => {
+const VisualizationDashboard = ({ stats, player }) => {
   if (!stats) return null;
 
   const getChampionImage = (championName) => {
@@ -58,7 +58,7 @@ const VisualizationDashboard = ({ stats }) => {
             <p className="chart-subtitle">Multi-dimensional performance analysis</p>
           </div>
           <div className="chart-card-body">
-            <PerformanceRadar stats={stats} />
+            <PerformanceRadar stats={stats} player={player} />
           </div>
         </div>
 
@@ -80,7 +80,7 @@ const VisualizationDashboard = ({ stats }) => {
             <p className="chart-subtitle">Your impact breakdown</p>
           </div>
           <div className="chart-card-body">
-            <TeamContribution stats={stats} />
+            <TeamContribution stats={stats} player={player} />
           </div>
         </div>
 
@@ -100,7 +100,7 @@ const VisualizationDashboard = ({ stats }) => {
             <h3 className="chart-title">Objective Participation</h3>
           </div>
           <div className="chart-card-body">
-            <ObjectiveParticipation stats={stats} />
+            <ObjectiveParticipation stats={stats} player={player} />
           </div>
         </div>
 

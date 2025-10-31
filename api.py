@@ -136,20 +136,18 @@ def analyze_player():
         puuid = summoner['puuid']
         display_name = f"{summoner['gameName']}#{summoner['tagLine']}"
 
-        # Step 2: Fetch ranked information (if summoner ID available)
+        # Step 2: Fetch ranked information using PUUID
         solo_rank = None
-        summoner_id = summoner.get('id')
-        if summoner_id:
-            try:
-                ranked_info = riot_client.get_ranked_info(summoner_id)
-                if ranked_info:
-                    for queue in ranked_info:
-                        if queue.get('queueType') == 'RANKED_SOLO_5x5':
-                            solo_rank = queue
-                            break
-            except Exception as e:
-                print(f"Could not fetch ranked info: {e}")
-                # Continue without rank info
+        try:
+            ranked_info = riot_client.get_ranked_info_by_puuid(puuid)
+            if ranked_info:
+                for queue in ranked_info:
+                    if queue.get('queueType') == 'RANKED_SOLO_5x5':
+                        solo_rank = queue
+                        break
+        except Exception as e:
+            print(f"Could not fetch ranked info: {e}")
+            # Continue without rank info
 
         # Step 3: Fetch match history with timelines for inventory snapshots
         matches = riot_client.get_full_year_matches(puuid, include_timeline=True)

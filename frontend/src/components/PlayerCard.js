@@ -27,7 +27,7 @@ const PlayerCard = ({ player }) => {
             {player.gameName}
             <span className="player-tag">#{player.tagLine}</span>
           </h2>
-          <p className="player-subtitle">2024 Year in Review</p>
+          <p className="player-subtitle">2025 Year in Review</p>
           {hasRank && (
             <div className="rank-display">
               <span className="rank-tier">{rank.tier} {rank.division}</span>
