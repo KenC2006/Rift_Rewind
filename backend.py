@@ -155,6 +155,21 @@ class RiotAPIClient:
         url = f"{self.base_url}/lol/league/v4/entries/by-summoner/{summoner_id}"
         return self._make_request(url)
 
+    def get_ranked_info_by_puuid(self, puuid: str) -> Optional[List[Dict]]:
+        """Get ranked information using PUUID directly
+
+        Uses the newer league-v4 endpoint that accepts PUUID.
+        Endpoint: /lol/league/v4/entries/by-puuid/{encryptedPUUID}
+
+        Args:
+            puuid: Player Universal Unique Identifier
+
+        Returns:
+            List of ranked entries (one per queue type)
+        """
+        url = f"{self.base_url}/lol/league/v4/entries/by-puuid/{puuid}"
+        return self._make_request(url)
+
     def get_full_year_matches(self, puuid: str, include_timeline: bool = False) -> List[Dict]:
         """Get all matches from the past year for a player.
         If include_timeline is True, attaches timeline under key 'timeline' for each match.
@@ -354,16 +369,18 @@ class MatchDataProcessor:
             ) / 10000  # Normalize large numbers
             
             # Specific objective stats for macro advice
-            if 'dragonKills' not in stats:
-                stats['dragonKills'] = 0
-                stats['baronKills'] = 0
+            if 'dragonTakedowns' not in stats:
+                stats['dragonTakedowns'] = 0
+                stats['baronTakedowns'] = 0
                 stats['turretKills'] = 0
                 stats['turretTakedowns'] = 0
                 stats['inhibitorKills'] = 0
                 stats['inhibitorTakedowns'] = 0
             
-            stats['dragonKills'] += participant.get('dragonKills', 0)
-            stats['baronKills'] += participant.get('baronKills', 0)
+            # Dragon and baron takedowns are in the challenges object
+            challenges = participant.get('challenges', {})
+            stats['dragonTakedowns'] += challenges.get('dragonTakedowns', 0)
+            stats['baronTakedowns'] += challenges.get('baronTakedowns', 0)
             stats['turretKills'] += participant.get('turretKills', 0)
             stats['turretTakedowns'] += participant.get('turretTakedowns', 0)
             stats['inhibitorKills'] += participant.get('inhibitorKills', 0)
@@ -603,8 +620,8 @@ class MatchDataProcessor:
             
             # Calculate objective averages for macro analysis
             if stats['total_matches'] > 0:
-                stats['avg_dragons'] = stats.get('dragonKills', 0) / stats['total_matches']
-                stats['avg_barons'] = stats.get('baronKills', 0) / stats['total_matches']
+                stats['avg_dragons'] = stats.get('dragonTakedowns', 0) / stats['total_matches']
+                stats['avg_barons'] = stats.get('baronTakedowns', 0) / stats['total_matches']
                 stats['avg_turrets'] = stats.get('turretTakedowns', 0) / stats['total_matches']
                 stats['avg_inhibitors'] = stats.get('inhibitorTakedowns', 0) / stats['total_matches']
             

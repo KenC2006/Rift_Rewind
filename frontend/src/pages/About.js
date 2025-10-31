@@ -17,7 +17,7 @@ function About() {
         <section className="about-section primary">
           <h2>What is Rift Rewind?</h2>
           <p>
-            Rift Rewind is a comprehensive analytics platform that analyzes your League of Legends gameplay from 2024
+            Rift Rewind is a comprehensive analytics platform that analyzes your League of Legends gameplay from 2025
             and provides actionable insights powered by artificial intelligence. Enter your Riot ID to receive
             a detailed breakdown of your performance, playstyle patterns, and strategic recommendations.
           </p>

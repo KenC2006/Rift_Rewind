@@ -2,21 +2,20 @@
 .item-usage:hover { border-color: rgba(200, 155, 60, 0.5); background: rgba(15, 25, 45, 0.6); box-shadow: 0 0 20px rgba(200, 155, 60, 0.2); }
 .iu-title { margin: 0 0 4px; font-size: 20px; }
 .iu-subtitle { margin: 0 0 16px; color: #8aa0b6; }
-.iu-champ-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 12px; }
-.iu-champ-card { background: #0b1220; border: 1px solid #1c2740; border-radius: 8px; padding: 12px; text-align: center; color: #dce6f2; cursor: pointer; }
-.iu-champ-card:hover { border-color: #3b82f6; }
-.iu-champ-card-img { width: 72px; height: 72px; border-radius: 6px; display: block; margin: 0 auto 8px; }
-.iu-champ-card-name { font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.iu-champ-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 16px; }
+.iu-champ-card { background: #0b1220; border: 1px solid #1c2740; border-radius: 8px; padding: 16px; text-align: center; color: #dce6f2; cursor: pointer; transition: all 0.3s ease; }
+.iu-champ-card:hover { border-color: #3b82f6; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); }
+.iu-champ-card-img { width: 96px; height: 96px; border-radius: 8px; display: block; margin: 0 auto 10px; }
+.iu-champ-card-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-.iu-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 1000; }
-.iu-modal { background: #0a0f1a; border: 1px solid #1c2740; border-radius: 10px; width: min(900px, 92vw); max-height: 85vh; overflow: auto; }
+.iu-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 9999; overflow-y: auto; }
+.iu-modal { background: #0a0f1a; border: 1px solid #1c2740; border-radius: 10px; width: min(900px, 92vw); max-height: 85vh; overflow: auto; margin: auto; position: relative; }
 .iu-modal-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-bottom: 1px solid #13203a; }
 .iu-champ { display: flex; align-items: center; gap: 10px; }
 .iu-champ-img { width: 36px; height: 36px; border-radius: 6px; }
 .iu-champ-name { font-weight: 600; }
 .iu-close { background: transparent; border: none; color: #9fb3c8; font-size: 24px; cursor: pointer; }
 .iu-modal-content { padding: 16px; display: grid; gap: 20px; }
-.phase-section {}
 .phase-title { font-weight: 600; margin-bottom: 8px; color: #9fb3c8; }
 .items-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
 .item-tile { display: flex; align-items: center; gap: 10px; background: #0b1220; border: 1px solid #16223b; border-radius: 8px; padding: 8px; }
@@ -26,4 +25,48 @@
 .item-name { font-size: 14px; color: #dce6f2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1 1 auto; min-width: 0; max-width: 65%; }
 .item-pct { font-size: 12px; color: #9fb3c8; white-space: nowrap; margin-left: auto; }
 
+/* Larger screens - scale up for 1920x1080 and beyond */
+@media (min-width: 1400px) {
+  .iu-champ-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; }
+  .iu-champ-card { padding: 20px; }
+  .iu-champ-card-img { width: 110px; height: 110px; }
+  .iu-champ-card-name { font-size: 14px; }
+  .iu-title { font-size: 24px; }
+  .iu-subtitle { font-size: 16px; }
+  
+  /* Modal scaling */
+  .iu-modal { width: min(1100px, 92vw); max-height: 88vh; }
+  .iu-modal-header { padding: 18px 20px; }
+  .iu-champ-img { width: 42px; height: 42px; }
+  .iu-champ-name { font-size: 18px; }
+  .iu-close { font-size: 28px; }
+  .iu-modal-content { padding: 20px; gap: 24px; }
+  .phase-title { font-size: 16px; margin-bottom: 12px; }
+  .items-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+  .item-tile { padding: 10px; gap: 12px; }
+  .item-icon { width: 44px; height: 44px; }
+  .item-name { font-size: 15px; }
+  .item-pct { font-size: 13px; }
+}
+
+@media (min-width: 1800px) {
+  .iu-champ-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 24px; }
+  .iu-champ-card { padding: 24px; }
+  .iu-champ-card-img { width: 128px; height: 128px; }
+  .iu-champ-card-name { font-size: 15px; }
+  
+  /* Modal scaling for ultra-wide */
+  .iu-modal { width: min(1300px, 92vw); max-height: 90vh; }
+  .iu-modal-header { padding: 20px 24px; }
+  .iu-champ-img { width: 48px; height: 48px; }
+  .iu-champ-name { font-size: 20px; }
+  .iu-close { font-size: 32px; }
+  .iu-modal-content { padding: 24px; gap: 28px; }
+  .phase-title { font-size: 18px; margin-bottom: 14px; }
+  .items-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+  .item-tile { padding: 12px; gap: 14px; }
+  .item-icon { width: 52px; height: 52px; }
+  .item-name { font-size: 16px; }
+  .item-pct { font-size: 14px; }
+}
 

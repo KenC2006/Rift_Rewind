@@ -47,7 +47,7 @@ function Stats() {
 
       {/* Content Sections */}
       <div className="content-wrapper">
-        <VisualizationDashboard stats={playerData.stats} />
+        <VisualizationDashboard stats={playerData.stats} player={playerData.player} />
         <ChampionGrid champions={playerData.stats.champions_played} />
       </div>
     </div>

@@ -1,13 +1,14 @@
-import React, { useLayoutEffect } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Climb.css';
-import BentoGrid from '../components/BentoGrid';
+import EnhancedInsightsPanel from '../components/EnhancedInsightsPanel';
 import ChatBot from '../components/ChatBot';
 import { usePlayer } from '../context/PlayerContext';
 
 function Climb() {
   const navigate = useNavigate();
   const { playerData } = usePlayer();
+  const [chatOpen, setChatOpen] = useState(false);
 
   useLayoutEffect(() => {
     // Force scroll to top before paint
@@ -62,7 +63,11 @@ function Climb() {
             </div>
             <div>
               <span className="stat-label">Current Rank</span>
-              <span className="stat-value">{playerData.player.rank || 'Unranked'}</span>
+              <span className="stat-value">
+                {playerData.player.rank
+                  ? `${playerData.player.rank.tier} ${playerData.player.rank.division}`
+                  : 'Unranked'}
+              </span>
             </div>
           </div>
           <div className="quick-stat">
@@ -80,20 +85,53 @@ function Climb() {
         </div>
       </div>
 
-      {/* Main Content - Split View */}
+      {/* Main Content - Full Width */}
       <div className="climb-main">
-        <div className="climb-content-wrapper">
-          {/* Left: Bento Grid Insights */}
-          <div className="insights-column">
-            <BentoGrid insights={playerData.insights} />
-          </div>
-
-          {/* Right: AI Chat */}
-          <div className="chat-column">
-            <ChatBot integrated={true} />
-          </div>
+        <div className="climb-content-full">
+          <EnhancedInsightsPanel insights={playerData.insights} />
         </div>
       </div>
+
+      {/* Floating Chat Toggle Button */}
+      <button 
+        className="chat-toggle-fab"
+        onClick={() => setChatOpen(!chatOpen)}
+        aria-label="Toggle AI Coach Chat"
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          <path d="M8 10h.01M12 10h.01M16 10h.01"/>
+        </svg>
+        <span className="fab-badge">AI Coach</span>
+      </button>
+
+      {/* Floating Chat Panel */}
+      {chatOpen && (
+        <>
+          <div className="chat-overlay" onClick={() => setChatOpen(false)} />
+          <div className="chat-panel-floating">
+            <div className="chat-panel-header">
+              <div className="chat-header-title">
+                <span className="chat-icon">🎓</span>
+                <span>AI Coach</span>
+              </div>
+              <button 
+                className="chat-close-btn"
+                onClick={() => setChatOpen(false)}
+                aria-label="Close chat"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <line x1="18" y1="6" x2="6" y2="18"/>
+                  <line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+              </button>
+            </div>
+            <div className="chat-panel-body">
+              <ChatBot integrated={true} />
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }
