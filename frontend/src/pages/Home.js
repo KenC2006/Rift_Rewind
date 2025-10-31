@@ -116,7 +116,7 @@ function Home() {
         <div className="hero-content">
           <div className="year-badge">
             <span className="badge-dot"></span>
-            2024 RECAP
+            2025 RECAP
           </div>
 
           <h1 className="main-title">
