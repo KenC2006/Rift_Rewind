@@ -787,6 +787,85 @@ class InsightGenerator:
         # Build comprehensive analysis data (Note: Rank removed from display per user feedback - API inconsistencies)
         # We still use elo internally for benchmarks, but don't mention it to users
 
+        # Precompute Champion Final-Item statistics for Section 6
+        try:
+            champions_sorted_for_items = sorted(
+                stats.get('champions_played', {}).items(),
+                key=lambda kv: kv[1].get('games', 0),
+                reverse=True
+            )
+            top_three_item_champs = [name for name, data in champions_sorted_for_items[:3]]
+        except Exception:
+            top_three_item_champs = []
+
+        def item_counts_for_champion(champion_name: str) -> Dict[str, int]:
+            counts: Dict[str, int] = {}
+            champ_inv = stats.get('inventory_by_champion', {}).get(champion_name, {})
+            finals = champ_inv.get('final', []) or []
+            for build in finals:
+                for item_id in build:
+                    key = str(item_id)
+                    counts[key] = counts.get(key, 0) + 1
+            return counts
+
+        def final_builds_for_champion(champion_name: str) -> List[List[int]]:
+            champ_inv = stats.get('inventory_by_champion', {}).get(champion_name, {})
+            return champ_inv.get('final', []) or []
+
+        def diversity_index_0_1(distribution: Dict[str, int]) -> float:
+            import math
+            total = sum(distribution.values()) or 1
+            if total == 0:
+                return 0.0
+            entropy = 0.0
+            for c in distribution.values():
+                p = c / total
+                if p > 0:
+                    entropy -= p * math.log(p, 2)
+            max_entropy = math.log(max(len(distribution), 1), 2) if len(distribution) > 0 else 0.0
+            return (entropy / max_entropy) if max_entropy > 0 else 0.0
+
+        item_sections_top3: List[Dict] = []
+        for champ_name in top_three_item_champs:
+            counts = item_counts_for_champion(champ_name)
+            sorted_items = sorted(counts.items(), key=lambda kv: kv[1], reverse=True)
+            games_played = stats.get('champions_played', {}).get(champ_name, {}).get('games', 0)
+            wins = stats.get('champions_played', {}).get(champ_name, {}).get('wins', 0)
+            wr = (wins / games_played * 100.0) if games_played else 0.0
+            builds = final_builds_for_champion(champ_name)
+            avg_slots = (sum(len(b) for b in builds) / len(builds)) if builds else 0.0
+            unique_items = len(counts)
+            top1_share = (sorted_items[0][1] / games_played * 100.0) if (games_played and sorted_items) else 0.0
+            top3_coverage = (sum(v for _, v in sorted_items[:3]) / games_played * 100.0) if games_played else 0.0
+            variety_idx = diversity_index_0_1(counts)
+            top2_ids = set(k for k, _ in sorted_items[:2])
+            flex_games = 0
+            for b in builds:
+                present = set(str(i) for i in b)
+                if not top2_ids.issubset(present):
+                    flex_games += 1
+            flex_pct = (flex_games / games_played * 100.0) if games_played else 0.0
+
+            item_sections_top3.append({
+                'champion': champ_name,
+                'matches': games_played,
+                'win_rate': round(wr, 1),
+                'unique_final_items': unique_items,
+                'avg_final_slots_filled': round(avg_slots, 2),
+                'top_item_usage_pct': round(top1_share, 1),
+                'top3_items_coverage_pct': round(top3_coverage, 1),
+                'build_variety_index_0_1': round(variety_idx, 3),
+                'build_variety_pct': round(variety_idx * 100.0, 1),
+                'flex_frequency_pct': round(flex_pct, 1),
+                'top_final_items': [
+                    {
+                        'itemId': k,
+                        'count': v,
+                        'usage_pct': round((v / games_played * 100.0), 1) if games_played else 0.0
+                    } for k, v in sorted_items[:8]
+                ]
+            })
+
         prompt = f"""You are an ELITE League of Legends roast master coach providing a BRUTALLY HONEST performance analysis for {summoner_name}.
 
 Your coaching philosophy: Data-driven, savage yet constructive, no-BS truthful. Think Tyler1 meets LS meets your flaming jungle premade who actually knows what they're talking about. Every roast must come with the fix - drag them for their mistakes but show them EXACTLY how to stop being a liability.
@@ -1007,7 +1086,26 @@ Now provide a SAVAGE yet TRANSFORMATIVE coaching analysis following this exact s
    Champion Pool Philosophy:
    Maintain 2-3 comfort picks while focusing extra practice on your highest win rate champion. Mastery beats variety. Stop being an OTP wannabe on 12 different champs.
 
-6. ROLE-SPECIFIC MASTERY PATH: {primary_role}
+6. CHAMPION ITEM ANALYSIS (TOP 3 MOST PLAYED)
+
+   Final-Item Focus: Analysis is based ONLY on FINAL inventory at game end for each champion.
+   Use distribution and diversity metrics to evaluate stability vs flexibility. Be concise but specific.
+
+   Statistics (per champion):
+   {json.dumps(item_sections_top3, indent=2)}
+
+   How to read this:
+   - Core stability: If top3_items_coverage_pct ≥ 70%, you're consistently hitting a core—list the likely 2-3 core itemIds from top_final_items.
+   - Overconcentration: If top_item_usage_pct ≥ 55%, you're over-relying on one item—suggest 1 flex alternative scenario.
+   - Diversity: unique_final_items + build_variety_pct indicate experimentation; low values → predictable (tighten strengths), high values → adaptable (guard against incoherent builds).
+   - Flex usage: flex_frequency_pct shows deviations from top-2 core—commend smart flexing if win_rate is high; recommend standardizing if win_rate lags.
+   - Slot completion: avg_final_slots_filled reflects economy/tempo; low averages → advise farm/recall discipline to consistently reach spikes.
+
+   For EACH of the 3 champions, write two short sub-sections using the stats above:
+   - WHAT'S WORKING: Call out core itemIds you reliably hit (from top_final_items), any healthy diversity (build_variety_index_0_1), and good flex patterns (flex_frequency_pct) if WR is strong.
+   - NEEDS IMPROVEMENT: Identify overconcentration (top_item_usage_pct too high), missing adaptation (anti-heal/armor/MR/stopwatch), or weak slot completion (avg_final_slots_filled). Give 1 concise fix (e.g., earlier back timing to finish component, swap one habitual item for matchup-specific).
+
+7. ROLE-SPECIFIC MASTERY PATH: {primary_role}
 
    Core Responsibilities (in priority order):"""
    
@@ -1093,7 +1191,7 @@ Now provide a SAVAGE yet TRANSFORMATIVE coaching analysis following this exact s
    
         prompt += f"""
 
-7. MACRO & OBJECTIVES (MANDATORY SECTION - DO NOT SKIP)
+8. MACRO & OBJECTIVES (MANDATORY SECTION - DO NOT SKIP)
 
    Provide macro analysis based on their objective stats:
    
@@ -1107,7 +1205,7 @@ Now provide a SAVAGE yet TRANSFORMATIVE coaching analysis following this exact s
    - Baron Usage: Recall → buy → push SIDE waves (not ARAM mid) → take towers
    - Numbers: 5v4? Force fight. 4v5? Defend, don't fight.
 
-8. 30/60/90 DAY IMPROVEMENT ROADMAP (MANDATORY SECTION - DO NOT SKIP)
+9. 30/60/90 DAY IMPROVEMENT ROADMAP (MANDATORY SECTION - DO NOT SKIP)
 
    Provide a concrete, day-by-day progression plan with specific targets and habits:
    
@@ -1151,14 +1249,46 @@ Now provide a SAVAGE yet TRANSFORMATIVE coaching analysis following this exact s
 
 Execute this roadmap consistently and your improvement is inevitable.
 
-TONE: Direct, savage, brutally honest but ultimately helpful. Channel your inner toxic challenger who actually wants to see them improve. Roast the mistakes mercilessly, then immediately tell them how to fix it. Every weakness gets the meme treatment before the solution. Think of it as flame + coaching in one package. "You're griefing with that CS/min, but here's the actual drill to fix it." Make them laugh at how bad they are, then make them better.
+"""
 
-IMPORTANT: While their best champion should be highlighted in Section 5 (Champion Pool), avoid making it the central focus of EVERY section. The analysis should primarily focus on fundamental skills (CS, vision, macro, role responsibilities) with champion-specific examples used sparingly. Balance champion mastery advice with broader gameplay improvement.
+        # Build data for Section 9: Champion Item Analysis (top 3 played champions)
+        try:
+            _champions_sorted = sorted(
+                stats.get('champions_played', {}).items(),
+                key=lambda kv: kv[1].get('games', 0),
+                reverse=True
+            )
+            _top_three = [name for name, data in _champions_sorted[:3]]
+        except Exception:
+            _top_three = []
 
-CRITICAL: You MUST provide ALL 8 SECTIONS. DO NOT skip or omit any section. Even if you need to be brief, every section (1-8) must be present in your response. If you're running short on space:
+        def _item_counts_for_champion(champion_name: str) -> Dict[str, int]:
+            counts: Dict[str, int] = {}
+            champ_inv = stats.get('inventory_by_champion', {}).get(champion_name, {})
+            finals = champ_inv.get('final', []) or []
+            for build in finals:
+                for item_id in build:
+                    key = str(item_id)
+                    counts[key] = counts.get(key, 0) + 1
+            return counts
+
+        _item_sections = []
+        for _champ in _top_three:
+            _counts = _item_counts_for_champion(_champ)
+            _top_items = sorted(_counts.items(), key=lambda kv: kv[1], reverse=True)[:8]
+            _item_sections.append({
+                'champion': _champ,
+                'matches': stats.get('champions_played', {}).get(_champ, {}).get('games', 0),
+                'final_items_usage': {k: v for k, v in _top_items}
+            })
+
+        # Final instructions and structure check
+        prompt += f"""
+
+CRITICAL: You MUST provide ALL 9 SECTIONS. DO NOT skip or omit any section. Even if you need to be brief, every section (1-9) must be present in your response. If you're running short on space:
 - Sections 1-3 are MANDATORY and full-length
 - Sections 4-6 can be condensed but MUST exist
-- Sections 7-8 are MANDATORY and must have real content (not "follow template")
+- Sections 7-9 are MANDATORY and must have real content (not "follow template")
 
 STRUCTURE CHECK: Your response must include these exact section headers:
 1. EXECUTIVE SUMMARY
@@ -1166,9 +1296,10 @@ STRUCTURE CHECK: Your response must include these exact section headers:
 3. CRITICAL IMPROVEMENT AREAS
 4. PRACTICE STRUCTURE
 5. CHAMPION POOL OPTIMIZATION
-6. ROLE-SPECIFIC MASTERY PATH
-7. MACRO & OBJECTIVES
-8. 30/60/90 DAY IMPROVEMENT ROADMAP
+6. CHAMPION ITEM ANALYSIS
+7. ROLE-SPECIFIC MASTERY PATH
+8. MACRO & OBJECTIVES
+9. 30/60/90 DAY IMPROVEMENT ROADMAP
 
 Each section must have actual content, not references to templates or formats.
 """

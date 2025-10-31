@@ -14,6 +14,8 @@ const ChatBot = ({ integrated = false }) => {
   const messagesEndRef = useRef(null);
   const chatContainerRef = useRef(null);
 
+  // No champion avatar override; keep Ryze icon in header
+
   const suggestedQuestions = [
     "How can I improve my KDA?",
     "What champions should I focus on?",
@@ -45,6 +47,18 @@ const ChatBot = ({ integrated = false }) => {
       }, 300);
     }
   }, [playerData]);
+
+  // Listen for external "Ask Ryze" requests from modals/cards
+  useEffect(() => {
+    const handler = (e) => {
+      const text = e?.detail?.message;
+      if (text && typeof text === 'string') {
+        handleSendMessage(text);
+      }
+    };
+    window.addEventListener('ryze:ask', handler);
+    return () => window.removeEventListener('ryze:ask', handler);
+  }, [messages]);
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {

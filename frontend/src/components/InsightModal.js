@@ -148,8 +148,13 @@ const InsightModal = ({ section, onClose }) => {
             style={{
               background: `linear-gradient(135deg, #C89B3C 0%, #F0E6D2 100%)`
             }}
-            onClick={onClose}
-            title="Close this modal and ask Ryze for more details in the chat"
+            onClick={() => {
+              const snippet = (section.content || '').split('\n').slice(0, 6).join(' ').slice(0, 400);
+              const message = `Ask about: ${section.title}. Key details: ${snippet}`.trim();
+              window.dispatchEvent(new CustomEvent('ryze:ask', { detail: { message } }));
+              onClose();
+            }}
+            title="Send this topic to Ryze chat and close the modal"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginRight: '0.5rem' }}>
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>

@@ -88,13 +88,19 @@ const BentoCard = ({ section, onClick, index }) => {
     }
   };
 
-  // Get preview text (first 80 characters)
-  const getPreview = (content) => {
-    const lines = content.split('\n').filter(line => line.trim());
-    if (lines.length > 0) {
-      const firstLine = lines[0].trim();
-      return firstLine.length > 80 ? firstLine.substring(0, 80) + '...' : firstLine;
-    }
+  // Get short description based on section title
+  const getDescription = (title) => {
+    const t = (title || '').toUpperCase();
+    if (t.includes('EXECUTIVE SUMMARY')) return 'High-level assessment and concrete improvement goals.';
+    if (t.includes('STRENGTH')) return 'Your strongest areas and how to press the advantage.';
+    if (t.includes('CRITICAL IMPROVEMENT') || t.includes('WEAKNESS')) return 'Biggest gaps with actionable, prioritized fixes.';
+    if (t.includes('PRACTICE STRUCTURE')) return 'Weekly drills and routines to build consistency.';
+    if (t.includes('CHAMPION POOL')) return 'Which champions to main, keep, or drop.';
+    if (t.includes('ITEM ANALYSIS')) return 'Final-item trends for top champs and adaptation tips.';
+    if (t.includes('ROLE-SPECIFIC')) return 'Core responsibilities, common mistakes, and a pro technique.';
+    if (t.includes('MACRO')) return 'Objective control, rotations, and map-wide decision making.';
+    if (t.includes('ROADMAP') || t.includes('30/60/90')) return '30/60/90 day improvement plan with targets.';
+    if (t.includes('OBJECTIVE')) return 'Your objective impact and how to trade/secure them.';
     return 'Click to view details';
   };
 
@@ -142,7 +148,7 @@ const BentoCard = ({ section, onClick, index }) => {
         </div>
       </div>
       <h3 className="bento-card-title">{section.title}</h3>
-      <p className="bento-card-preview">{getPreview(section.content)}</p>
+      <p className="bento-card-preview">{getDescription(section.title)}</p>
       <div className="bento-card-footer">
         <span className="bento-card-cta">View Details</span>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

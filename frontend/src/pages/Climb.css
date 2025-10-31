@@ -50,6 +50,9 @@
   max-width: 900px;
   margin: 0 auto 3rem;
   z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .header-content h2 {
@@ -96,6 +99,11 @@
   margin: 0;
   font-weight: 400;
   letter-spacing: 0.5px;
+}
+
+.header-subtitle {
+  display: block;
+  margin-top: 0.75rem;
 }
 
 /* Stats Cards - Floating */
