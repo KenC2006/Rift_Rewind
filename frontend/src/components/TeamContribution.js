@@ -95,9 +95,9 @@ const TeamContribution = ({ stats, player }) => {
       }
     ];
 
-    // Chart dimensions
-    const width = 450;
-    const height = 300;
+    // Chart dimensions - Increased for better visibility
+    const width = 650;
+    const height = 400;
     const margin = { top: 20, right: 40, bottom: 40, left: 140 };
     const chartWidth = width - margin.left - margin.right;
     const chartHeight = height - margin.top - margin.bottom;

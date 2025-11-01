@@ -147,16 +147,16 @@ const PerformanceRadar = ({ stats, player }) => {
 
     const benchmarkData = [
       { axis: 'CS/min', value: 100, raw: benchmark.csPerMin.toFixed(1) },
-      { axis: 'KDA', value: 100, raw: benchmark.kda.toFixed(2) },
-      { axis: 'Vision', value: 100, raw: benchmark.vision.toFixed(1) },
       { axis: 'Objectives', value: 100, raw: benchmark.objParticipation.toFixed(2) },
-      { axis: 'Kill Part.', value: 100, raw: (benchmark.killParticipation * 100).toFixed(1) + '%' }
+      { axis: 'Kill Participation', value: 100, raw: (benchmark.killParticipation * 100).toFixed(1) + '%' },
+      { axis: 'Vision Score', value: 100, raw: benchmark.vision.toFixed(1) },
+      { axis: 'KDA', value: 100, raw: benchmark.kda.toFixed(2) }
     ];
 
-    // Chart configuration
-    const width = 400;
-    const height = 400;
-    const margin = { top: 60, right: 60, bottom: 60, left: 60 };
+    // Chart configuration - Increased size for better readability
+    const width = 550;
+    const height = 550;
+    const margin = { top: 80, right: 80, bottom: 80, left: 80 };
     const radius = Math.min(width - margin.left - margin.right, height - margin.top - margin.bottom) / 2;
     const levels = 5;
     const maxValue = 150;

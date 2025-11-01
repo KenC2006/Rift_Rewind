@@ -85,11 +85,24 @@ const ChampionGrid = ({ champions }) => {
   };
 
   const getPerformanceGrade = (champ) => {
-    const { winRate, kda } = champ;
-    if (winRate >= 60 && kda >= 3.5) return { grade: 'S', color: '#ffd700' };
-    if (winRate >= 55 && kda >= 3) return { grade: 'A', color: '#10b981' };
-    if (winRate >= 50 && kda >= 2.5) return { grade: 'B', color: '#3b82f6' };
-    if (winRate >= 45 && kda >= 2) return { grade: 'C', color: '#f59e0b' };
+    const { winRate, kda, games } = champ;
+    // S Tier: Dominant performance (55%+ WR and 3.5+ KDA with decent games)
+    if (winRate >= 55 && kda >= 3.5 && games >= 10) {
+      return { grade: 'S', color: '#ffd700' };
+    }
+    // A Tier: Strong performance (52%+ WR and 3.0+ KDA)
+    if (winRate >= 52 && kda >= 3.0 && games >= 5) {
+      return { grade: 'A', color: '#10b981' };
+    }
+    // B Tier: Above average (48%+ WR and 2.5+ KDA)
+    if (winRate >= 48 && kda >= 2.5 && games >= 3) {
+      return { grade: 'B', color: '#3b82f6' };
+    }
+    // C Tier: Average or learning (42%+ WR and 2.0+ KDA, or low sample size)
+    if ((winRate >= 42 && kda >= 2.0) || games < 3) {
+      return { grade: 'C', color: '#f59e0b' };
+    }
+    // D Tier: Needs improvement
     return { grade: 'D', color: '#ef4444' };
   };
 

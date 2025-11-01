@@ -24,28 +24,28 @@ const ChampionDetail = ({ champion, championData, onClose }) => {
   const games = championData.games;
 
   const getPerformanceGrade = () => {
-    // S Tier: Truly dominant performance (58%+ WR, 4.0+ KDA, sufficient games)
-    if (winRate >= 58 && kda >= 4.0 && games >= 20) {
+    // S Tier: Dominant performance (55%+ WR and 3.5+ KDA with decent games)
+    if (winRate >= 55 && kda >= 3.5 && games >= 10) {
       return { grade: 'S', color: '#ffd700', label: 'Dominant' };
     }
 
-    // A Tier: Strong/Excellent performance (54%+ WR, 3.0+ KDA, sufficient games)
-    if (winRate >= 54 && kda >= 3.0 && games >= 15) {
+    // A Tier: Strong performance (52%+ WR and 3.0+ KDA)
+    if (winRate >= 52 && kda >= 3.0 && games >= 5) {
       return { grade: 'A', color: '#10b981', label: 'Excellent' };
     }
 
-    // B Tier: Solid/Above Average (50%+ WR, 2.5+ KDA, sufficient games)
-    if (winRate >= 50 && kda >= 2.5 && games >= 10) {
+    // B Tier: Above average (48%+ WR and 2.5+ KDA)
+    if (winRate >= 48 && kda >= 2.5 && games >= 3) {
       return { grade: 'B', color: '#3b82f6', label: 'Solid' };
     }
 
-    // C Tier: Inconsistent or learning (45%+ WR OR 2.0+ KDA, or low sample size)
-    if ((winRate >= 45 && kda >= 2.0) || games < 10) {
-      return { grade: 'C', color: '#f59e0b', label: games < 10 ? 'Learning' : 'Inconsistent' };
+    // C Tier: Average or learning (42%+ WR and 2.0+ KDA, or low sample size)
+    if ((winRate >= 42 && kda >= 2.0) || games < 3) {
+      return { grade: 'C', color: '#f59e0b', label: games < 3 ? 'Learning' : 'Average' };
     }
 
-    // D Tier: Struggling (below 45% WR and below 2.0 KDA)
-    return { grade: 'D', color: '#ef4444', label: 'Struggling' };
+    // D Tier: Needs improvement (below 42% WR or below 2.0 KDA)
+    return { grade: 'D', color: '#ef4444', label: 'Needs Work' };
   };
 
   const getChampionTips = () => {
@@ -67,7 +67,7 @@ const ChampionDetail = ({ champion, championData, onClose }) => {
         type: 'info',
         text: `You're performing solidly on ${champion} with a positive win rate. To reach the next level, analyze what separates your wins from your losses.`
       });
-    } else if (performance.grade === 'C' && games < 10) {
+    } else if (performance.grade === 'C' && games < 3) {
       tips.push({
         type: 'info',
         text: `You're still learning ${champion} with only ${games} games played. Keep practicing to develop consistency and muscle memory with their kit.`
@@ -149,11 +149,6 @@ const ChampionDetail = ({ champion, championData, onClose }) => {
   return (
     <div className="champion-detail-overlay" onClick={onClose}>
       <div className="champion-detail-modal" onClick={(e) => e.stopPropagation()}>
-        {/* Close button */}
-        <button className="modal-close" onClick={onClose}>
-          <FiX size={24} />
-        </button>
-
         {/* Header with splash art */}
         <div className="modal-header">
           <div className="header-background">
@@ -170,6 +165,7 @@ const ChampionDetail = ({ champion, championData, onClose }) => {
               </div>
             </div>
           </div>
+          <button className="modal-close-btn" onClick={onClose} aria-label="Close">×</button>
         </div>
 
         {/* Stats Overview */}

@@ -123,10 +123,10 @@ const ObjectiveParticipation = ({ stats, player }) => {
       }
     ];
 
-    // Chart dimensions
+    // Chart dimensions - Increased for better visibility
     const margin = { top: 40, right: 40, bottom: 60, left: 60 };
-    const width = 500 - margin.left - margin.right;
-    const height = 350 - margin.top - margin.bottom;
+    const width = 600 - margin.left - margin.right;
+    const height = 400 - margin.top - margin.bottom;
 
     const svg = d3.select(svgRef.current)
       .attr('width', width + margin.left + margin.right)

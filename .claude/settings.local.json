@@ -4,7 +4,9 @@
       "Bash(npm install:*)",
       "WebFetch(domain:reactbits.dev)",
       "WebSearch",
-      "Bash(tree:*)"
+      "Bash(tree:*)",
+      "Bash(npm run build:*)",
+      "Bash(cat:*)"
     ],
     "deny": [],
     "ask": []

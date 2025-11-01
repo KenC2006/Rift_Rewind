@@ -41,9 +41,9 @@ const RoleDistribution = ({ rolesPlayed }) => {
 
     const total = data.reduce((sum, d) => sum + d.games, 0);
 
-    // Chart dimensions
-    const width = 400;
-    const height = 400;
+    // Chart dimensions - Increased for better visibility
+    const width = 450;
+    const height = 450;
     const radius = Math.min(width, height) / 2 - 40;
 
     const svg = d3.select(svgRef.current)

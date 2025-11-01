@@ -111,19 +111,20 @@
   letter-spacing: -0.5px;
 }
 
-/* Charts Grid - Bento Box Layout */
+/* Charts Grid - Improved 2-Column Layout */
 .charts-grid {
-  max-width: 1800px;
+  max-width: 1600px;
   margin: 0 auto;
   padding: 0 60px;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: auto auto auto;
-  gap: 20px;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: auto;
+  gap: 32px;
   grid-template-areas:
-    "featured featured tall tall"
-    "wide wide wide compact-1"
-    "compact-2 wide-2 wide-2 wide-2";
+    "featured featured"
+    "tall wide"
+    "compact-1 compact-2"
+    "wide-2 wide-2";
 }
 
 /* Chart Cards */
@@ -147,18 +148,18 @@
 /* Chart Size Variants */
 .chart-featured {
   grid-area: featured;
-  min-height: 480px;
+  min-height: 600px;
   border: 1px solid rgba(200, 155, 60, 0.2);
   background: linear-gradient(135deg, rgba(15, 25, 45, 0.8) 0%, rgba(200, 155, 60, 0.05) 100%);
 }
 
 .chart-tall {
   grid-area: tall;
-  min-height: 480px;
+  min-height: 550px;
 }
 
 .chart-wide {
-  min-height: 320px;
+  min-height: 550px;
 }
 
 .chart-wide:nth-of-type(3) {
@@ -167,10 +168,11 @@
 
 .chart-wide:nth-of-type(6) {
   grid-area: wide-2;
+  min-height: 450px;
 }
 
 .chart-compact {
-  min-height: 320px;
+  min-height: 420px;
 }
 
 .chart-compact:nth-of-type(4) {
@@ -183,34 +185,34 @@
 
 /* Chart Card Structure */
 .chart-card-header {
-  padding: 20px 24px;
+  padding: 24px 32px;
   border-bottom: 1px solid rgba(200, 155, 60, 0.1);
   background: rgba(10, 20, 40, 0.4);
   flex-shrink: 0;
 }
 
 .chart-title {
-  margin: 0 0 4px 0;
-  font-size: 1.05rem;
-  font-weight: 600;
+  margin: 0 0 6px 0;
+  font-size: 1.25rem;
+  font-weight: 700;
   color: #e2e8f0;
   letter-spacing: 0.3px;
 }
 
 .chart-subtitle {
   margin: 0;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   color: #94a3b8;
   font-weight: 400;
 }
 
 .chart-card-body {
-  padding: 24px;
+  padding: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex: 1;
-  min-height: 250px;
+  min-height: 400px;
 }
 
 /* Featured Chart Special Styling */
@@ -220,9 +222,14 @@
 }
 
 .chart-featured .chart-title {
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   color: #C89B3C;
-  font-weight: 700;
+  font-weight: 800;
+}
+
+.chart-featured .chart-card-body {
+  padding: 60px 40px;
+  min-height: 480px;
 }
 
 /* Responsive Design */

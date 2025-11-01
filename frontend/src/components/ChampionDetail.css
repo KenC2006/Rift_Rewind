@@ -48,28 +48,30 @@
   }
 }
 
-/* Close Button */
-.modal-close {
+/* Close Button - Copied from working ItemUsage implementation */
+.modal-close-btn {
   position: absolute;
   top: 20px;
   right: 20px;
-  z-index: 10;
-  background: rgba(0, 0, 0, 0.6);
-  border: 1px solid rgba(200, 155, 60, 0.3);
-  border-radius: 50%;
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 32px;
+  cursor: pointer;
   width: 40px;
   height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
-  cursor: pointer;
+  border-radius: 8px;
   transition: all 0.2s ease;
+  z-index: 10;
+  pointer-events: auto;
 }
 
-.modal-close:hover {
+.modal-close-btn:hover {
   background: rgba(200, 155, 60, 0.2);
-  border-color: #C89B3C;
+  color: #C89B3C;
   transform: rotate(90deg);
 }
 
@@ -79,6 +81,7 @@
   height: 250px;
   overflow: hidden;
   border-radius: 20px 20px 0 0;
+  z-index: 1;
 }
 
 .header-background {
@@ -87,6 +90,8 @@
   left: 0;
   right: 0;
   bottom: 0;
+  z-index: 1;
+  pointer-events: none;
 }
 
 .header-background img {
@@ -94,6 +99,7 @@
   height: 100%;
   object-fit: cover;
   object-position: center 20%;
+  pointer-events: none;
 }
 
 .header-overlay {
@@ -103,6 +109,8 @@
   right: 0;
   bottom: 0;
   background: linear-gradient(180deg, transparent 0%, rgba(10, 20, 40, 0.95) 100%);
+  z-index: 2;
+  pointer-events: none;
 }
 
 .header-content {
@@ -112,7 +120,12 @@
   align-items: flex-end;
   padding: 30px;
   gap: 20px;
-  z-index: 1;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.header-content > * {
+  pointer-events: auto;
 }
 
 .champion-portrait {
