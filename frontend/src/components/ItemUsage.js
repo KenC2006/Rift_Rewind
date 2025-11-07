@@ -1,5 +1,6 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useRef } from 'react';
 import ReactDOM from 'react-dom';
+import { FiBarChart2, FiTrendingUp, FiChevronDown } from 'react-icons/fi';
 import './ItemUsage.css';
 import { getItemsMapping } from '../services/api';
 
@@ -232,6 +233,20 @@ const ItemUsage = ({ stats }) => {
   const [selected, setSelected] = useState(null); // champion name
   const [idToName, setIdToName] = useState({});
   const [sortBy, setSortBy] = useState('games'); // games, winrate
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   useEffect(() => {
     const load = async () => {
@@ -268,6 +283,19 @@ const ItemUsage = ({ stats }) => {
   const totalChampions = champions.length;
   const totalGamesWithData = champions.reduce((sum, name) => sum + (stats?.champions_played?.[name]?.games || 0), 0);
 
+  // Sort options with icons
+  const sortOptions = [
+    { value: 'games', label: 'Games Played', icon: FiBarChart2 },
+    { value: 'winrate', label: 'Win Rate', icon: FiTrendingUp }
+  ];
+
+  const currentSort = sortOptions.find(opt => opt.value === sortBy);
+
+  const handleSortChange = (value) => {
+    setSortBy(value);
+    setDropdownOpen(false);
+  };
+
   return (
     <div className="item-usage">
       <div className="iu-header-section">
@@ -280,14 +308,31 @@ const ItemUsage = ({ stats }) => {
         </div>
         <div className="iu-sort-controls">
           <label className="iu-sort-label">Sort by:</label>
-          <select
-            className="iu-sort-select"
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-          >
-            <option value="games">Most Played</option>
-            <option value="winrate">Highest Win Rate</option>
-          </select>
+          <div className="custom-dropdown" ref={dropdownRef}>
+            <button
+              className="dropdown-button"
+              onClick={() => setDropdownOpen(!dropdownOpen)}
+            >
+              <currentSort.icon className="dropdown-icon" />
+              <span className="dropdown-text">{currentSort.label}</span>
+              <FiChevronDown className={`dropdown-chevron ${dropdownOpen ? 'open' : ''}`} />
+            </button>
+            {dropdownOpen && (
+              <div className="dropdown-menu">
+                {sortOptions.map((option) => (
+                  <button
+                    key={option.value}
+                    className={`dropdown-item ${sortBy === option.value ? 'active' : ''}`}
+                    onClick={() => handleSortChange(option.value)}
+                  >
+                    <option.icon className="dropdown-item-icon" />
+                    <span>{option.label}</span>
+                    {sortBy === option.value && <div className="active-indicator" />}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
