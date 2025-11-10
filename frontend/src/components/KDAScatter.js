@@ -90,7 +90,7 @@ const KDAScatter = ({ champions }) => {
       .style('stroke-dasharray', '3,3')
       .style('opacity', 0.3);
 
-    const idealZone = g.append('rect')
+    g.append('rect')
       .attr('x', 0)
       .attr('y', 0)
       .attr('width', xScale(5)) // Low deaths (0-5)
@@ -109,7 +109,7 @@ const KDAScatter = ({ champions }) => {
       .text('Ideal Zone');
 
     // Draw circles for champions
-    const circles = g.selectAll('.champion-circle')
+    g.selectAll('.champion-circle')
       .data(championsArray)
       .enter()
       .append('circle')

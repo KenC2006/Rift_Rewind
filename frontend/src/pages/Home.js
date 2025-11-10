@@ -22,8 +22,6 @@ function Home() {
     setLoading,
     setError,
     updatePlayerData,
-    playerData,
-    clearPlayerData,
   } = usePlayer();
 
   const [porosLoaded, setPorosLoaded] = useState(false);
@@ -41,16 +39,13 @@ function Home() {
       poroSad
     ];
 
-    let loadedCount = 0;
     const imagePromises = poroImages.map((src) => {
       return new Promise((resolve) => {
         const img = new Image();
         img.onload = () => {
-          loadedCount++;
           resolve();
         };
         img.onerror = () => {
-          loadedCount++;
           resolve(); // Resolve even on error to not block rendering
         };
         img.src = src;

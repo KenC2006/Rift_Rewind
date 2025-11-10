@@ -88,7 +88,7 @@ function Climb() {
       {/* Main Content - Full Width */}
       <div className="climb-main">
         <div className="climb-content-full">
-          <EnhancedInsightsPanel insights={playerData.insights} />
+          <EnhancedInsightsPanel insights={playerData.insights} stats={playerData.stats} player={playerData.player} />
         </div>
       </div>
 

@@ -243,7 +243,7 @@ const ItemUsage = ({ stats }) => {
     load();
   }, []);
 
-  const invByChamp = stats?.inventory_by_champion || {};
+  const invByChamp = useMemo(() => stats?.inventory_by_champion || {}, [stats]);
   const champions = useMemo(() => {
     const all = Object.keys(stats?.champions_played || {});
     const filtered = all.filter((name) => {

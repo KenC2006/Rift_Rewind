@@ -1,19 +1,10 @@
 import React from 'react';
-import { FiX, FiTrendingUp, FiTarget, FiAward } from 'react-icons/fi';
+import { FiTrendingUp, FiTarget, FiAward } from 'react-icons/fi';
+import { getChampionImage, getSplashArt } from '../utils/championUtils';
 import './ChampionDetail.css';
 
 const ChampionDetail = ({ champion, championData, onClose }) => {
   if (!champion || !championData) return null;
-
-  const getChampionImage = (championName) => {
-    const formattedName = championName.replace(/[^a-zA-Z]/g, '');
-    return `https://ddragon.leagueoflegends.com/cdn/14.1.1/img/champion/${formattedName}.png`;
-  };
-
-  const getSplashArt = (championName) => {
-    const formattedName = championName.replace(/[^a-zA-Z]/g, '');
-    return `https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${formattedName}_0.jpg`;
-  };
 
   const winRate = championData.games > 0 ? (championData.wins / championData.games) * 100 : 0;
   const avgKills = championData.games > 0 ? championData.kills / championData.games : 0;

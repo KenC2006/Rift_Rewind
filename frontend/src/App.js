@@ -12,7 +12,6 @@ import StaggeredMenu from './components/StaggeredMenu';
 import Home from './pages/Home';
 import Stats from './pages/Stats';
 import Climb from './pages/Climb';
-import About from './pages/About';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -31,8 +30,7 @@ function App() {
   const menuItems = [
     { label: 'Home', ariaLabel: 'Go to home page', link: '/' },
     { label: 'Stats', ariaLabel: 'View your stats', link: '/stats' },
-    { label: 'Climb', ariaLabel: 'Get improvement insights', link: '/climb' },
-    { label: 'About', ariaLabel: 'Learn about Rift Rewind', link: '/about' }
+    { label: 'Climb', ariaLabel: 'Get improvement insights', link: '/climb' }
   ];
 
   return (
@@ -57,7 +55,6 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/stats" element={<Stats />} />
               <Route path="/climb" element={<Climb />} />
-              <Route path="/about" element={<About />} />
             </Routes>
           </div>
 

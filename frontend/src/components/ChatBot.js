@@ -44,7 +44,7 @@ const ChatBot = ({ integrated = false }) => {
         ]);
       }, 300);
     }
-  }, [playerData]);
+  }, [playerData, messages.length]);
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {

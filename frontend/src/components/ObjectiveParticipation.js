@@ -154,7 +154,7 @@ const ObjectiveParticipation = ({ stats, player }) => {
       .nice();
 
     // Add grid lines
-    const gridLines = g.append('g')
+    g.append('g')
       .attr('class', 'grid')
       .selectAll('line')
       .data(y.ticks(5))

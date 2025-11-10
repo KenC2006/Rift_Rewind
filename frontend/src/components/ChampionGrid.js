@@ -1,12 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { FiTrendingUp, FiTrendingDown, FiAward, FiTarget, FiChevronDown, FiBarChart2, FiCrosshair } from 'react-icons/fi';
+import { FiTrendingUp, FiAward, FiTarget, FiChevronDown, FiBarChart2, FiCrosshair } from 'react-icons/fi';
+import { getChampionImage, getSplashArt } from '../utils/championUtils';
 import ChampionDetail from './ChampionDetail';
 import './ChampionGrid.css';
 
 const ChampionGrid = ({ champions }) => {
   const [sortBy, setSortBy] = useState('games'); // games, winRate, kda, cs
   const [selectedChampion, setSelectedChampion] = useState(null);
-  const [viewMode, setViewMode] = useState('featured'); // featured, grid
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -59,16 +59,6 @@ const ChampionGrid = ({ champions }) => {
   // Split into featured (top 3) and rest
   const featuredChampions = championArray.slice(0, 3);
   const remainingChampions = championArray.slice(3);
-
-  const getChampionImage = (championName) => {
-    const formattedName = championName.replace(/[^a-zA-Z]/g, '');
-    return `https://ddragon.leagueoflegends.com/cdn/14.1.1/img/champion/${formattedName}.png`;
-  };
-
-  const getSplashArt = (championName) => {
-    const formattedName = championName.replace(/[^a-zA-Z]/g, '');
-    return `https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${formattedName}_0.jpg`;
-  };
 
   const getWinRateColor = (wr) => {
     if (wr >= 55) return '#10b981';

@@ -1,5 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
+import { getRankTier } from '../utils/rankUtils';
+import { DAMAGE_SHARE_BENCHMARKS, GOLD_SHARE_BENCHMARKS } from '../constants/benchmarks';
 import './TeamContribution.css';
 
 const TeamContribution = ({ stats, player }) => {
@@ -11,66 +13,8 @@ const TeamContribution = ({ stats, player }) => {
     // Clear previous chart
     d3.select(svgRef.current).selectAll('*').remove();
 
-    // Get player's rank tier
-    const getRankTier = () => {
-      if (!player || !player.rank) return 'SILVER';
-      const tier = player.rank.tier;
-      if (['MASTER', 'GRANDMASTER', 'CHALLENGER'].includes(tier)) return 'MASTER+';
-      return tier;
-    };
-
-    const rankTier = getRankTier();
+    const rankTier = getRankTier(player);
     const primaryRole = stats.primary_role || 'MIDDLE';
-
-    // Damage share benchmarks by role and rank (from LeagueMath data)
-    // Support values calculated as: 100% - (Top + Jungle + Mid + Bot)
-    const DAMAGE_SHARE_BENCHMARKS = {
-      TOP: {
-        IRON: 23.3, BRONZE: 23.3, SILVER: 22.4, GOLD: 21.7,
-        PLATINUM: 21.4, EMERALD: 21.5, DIAMOND: 21.6, 'MASTER+': 19.5
-      },
-      JUNGLE: {
-        IRON: 18.5, BRONZE: 18.5, SILVER: 17.8, GOLD: 17.2,
-        PLATINUM: 16.8, EMERALD: 16.5, DIAMOND: 16.2, 'MASTER+': 16.0
-      },
-      MIDDLE: {
-        IRON: 34.0, BRONZE: 34.0, SILVER: 34.2, GOLD: 33.8,
-        PLATINUM: 33.5, EMERALD: 33.2, DIAMOND: 32.8, 'MASTER+': 33.0
-      },
-      BOTTOM: {
-        IRON: 27.6, BRONZE: 27.6, SILVER: 31.2, GOLD: 34.0,
-        PLATINUM: 35.1, EMERALD: 35.0, DIAMOND: 35.0, 'MASTER+': 35.1
-      },
-      SUPPORT: {
-        IRON: 5.0, BRONZE: 5.0, SILVER: 3.0, GOLD: 2.3,
-        PLATINUM: 2.0, EMERALD: 2.0, DIAMOND: 2.1, 'MASTER+': 2.3
-      }
-    };
-
-    // Gold share benchmarks by role and rank
-    // Based on professional data + rank progression (carries get more gold at higher ranks)
-    const GOLD_SHARE_BENCHMARKS = {
-      TOP: {
-        IRON: 20.5, BRONZE: 20.5, SILVER: 20.3, GOLD: 20.0,
-        PLATINUM: 19.8, EMERALD: 19.5, DIAMOND: 19.3, 'MASTER+': 19.0
-      },
-      JUNGLE: {
-        IRON: 19.0, BRONZE: 19.0, SILVER: 18.5, GOLD: 18.0,
-        PLATINUM: 17.8, EMERALD: 17.5, DIAMOND: 17.3, 'MASTER+': 17.0
-      },
-      MIDDLE: {
-        IRON: 21.5, BRONZE: 21.5, SILVER: 22.0, GOLD: 22.5,
-        PLATINUM: 23.0, EMERALD: 23.3, DIAMOND: 23.5, 'MASTER+': 23.8
-      },
-      BOTTOM: {
-        IRON: 23.0, BRONZE: 23.0, SILVER: 23.5, GOLD: 24.0,
-        PLATINUM: 24.5, EMERALD: 25.0, DIAMOND: 25.3, 'MASTER+': 25.5
-      },
-      SUPPORT: {
-        IRON: 15.5, BRONZE: 15.5, SILVER: 15.2, GOLD: 15.0,
-        PLATINUM: 14.4, EMERALD: 14.2, DIAMOND: 14.1, 'MASTER+': 14.2
-      }
-    };
 
     // Get rank-aware benchmarks
     const expected = {

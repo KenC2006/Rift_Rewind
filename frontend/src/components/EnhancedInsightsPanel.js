@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import './EnhancedInsightsPanel.css';
 
-const EnhancedInsightsPanel = ({ insights }) => {
-  const [activeSection, setActiveSection] = useState(0);
+const EnhancedInsightsPanel = ({ insights, stats, player }) => {
+  const [featuredSection, setFeaturedSection] = useState(0);
+  const primaryRole = stats?.primary_role || 'MIDDLE';
 
   // Parse insights into sections
   const parseSections = (text) => {
@@ -110,8 +111,7 @@ const EnhancedInsightsPanel = ({ insights }) => {
   const extractMetrics = (content) => {
     const metrics = [];
     const percentagePattern = /(\d+\.?\d*%)/g;
-    const ratePattern = /(\d+\.?\d+)\s*(CS|KDA|wins|games|deaths)/gi;
-    
+
     let match;
     while ((match = percentagePattern.exec(content)) !== null) {
       metrics.push({ value: match[1], type: 'percentage' });
@@ -278,7 +278,7 @@ const EnhancedInsightsPanel = ({ insights }) => {
 
     lines.forEach(line => {
       // Look for "Your X: Y | Target: Z" patterns
-      const benchMatch = line.match(/([^:]+):\s*([\d.]+)[^\|]*\|\s*Target[^:]*:\s*([\d.]+)/i);
+      const benchMatch = line.match(/([^:]+):\s*([\d.]+)[^|]*\|\s*Target[^:]*:\s*([\d.]+)/i);
       if (benchMatch) {
         benchmarks.push({
           metric: benchMatch[1].trim(),
@@ -288,7 +288,7 @@ const EnhancedInsightsPanel = ({ insights }) => {
       }
       
       // Also look for "CS/min: X | Target for ROLE: Y" patterns
-      const csMatch = line.match(/(CS\/min|KDA|Vision):\s*([\d.]+)[^\|]*Target[^:]*:\s*([\d.]+)/i);
+      const csMatch = line.match(/(CS\/min|KDA|Vision):\s*([\d.]+)[^|]*Target[^:]*:\s*([\d.]+)/i);
       if (csMatch) {
         benchmarks.push({
           metric: csMatch[1],
@@ -301,78 +301,67 @@ const EnhancedInsightsPanel = ({ insights }) => {
     return benchmarks;
   };
 
+  // Determine card size based on content
+  const getCardSize = (section, championTiers, method321, roadmap, benchmarks) => {
+    const totalChampions = championTiers.S.length + championTiers.B.length + championTiers.C.length;
+    const practiceItems = method321.immediate.length + method321.weekly.length;
+
+    // Large cards for content-heavy sections
+    if (totalChampions > 0 || practiceItems > 2 || roadmap.length > 0) {
+      return 'large';
+    }
+    // Medium for everything else
+    return 'medium';
+  };
+
   return (
     <div className="enhanced-insights-visual">
-      {/* Navigation Pills */}
-      <div className="insights-nav">
-        <div className="nav-pills">
-          {sections.map((section, index) => (
-            <button
-              key={index}
-              className={`nav-pill ${activeSection === index ? 'active' : ''}`}
-              onClick={() => setActiveSection(index)}
-              style={{ '--pill-color': section.color }}
-            >
-              <span className="pill-icon">{section.icon}</span>
-              <span className="pill-label">{section.shortName}</span>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Active Section Display */}
-      <div className="section-display">
+      {/* Masonry Grid Layout */}
+      <div className="insights-masonry-grid">
         {sections.map((section, index) => {
-          if (activeSection !== index) return null;
           
           const actionItems = extractActionItems(section.content);
-          const metrics = extractMetrics(section.content);
-          const rating = extractRating(section.content);
           const championTiers = extractChampionTiers(section.content);
           const method321 = extract321Method(section.content);
           const roadmap = extractRoadmap(section.content);
           const benchmarks = extractBenchmarks(section.content);
-          
+
+          const cardSize = getCardSize(section, championTiers, method321, roadmap, benchmarks);
+
           // Determine which special components to show
           const isChampionPool = section.title.includes('CHAMPION POOL');
           const isPractice = section.title.includes('PRACTICE') || section.title.includes('IMPROVEMENT');
           const isRoadmap = section.title.includes('ROADMAP') || section.title.includes('30/60/90');
           const hasBenchmarks = benchmarks.length > 0;
-          
+
           return (
-            <div 
-              key={index} 
-              className="section-view"
-              style={{ '--section-color': section.color }}
+            <div
+              key={index}
+              className={`masonry-card card-${cardSize}`}
+              style={{ '--section-color': section.color, animationDelay: `${index * 0.1}s` }}
             >
-              {/* Section Header */}
-              <div className="section-header-visual">
-                <div className="header-icon-large">
-                  {section.icon}
-                </div>
-                <div className="header-text">
-                  <h2 className="section-title-visual">{section.title}</h2>
-                  <p className="section-subtitle">Section {index + 1} of {sections.length}</p>
-                </div>
-                {rating && (
-                  <div className="rating-badge-large">
-                    <div className="rating-letter">{rating}</div>
-                    <div className="rating-label">Grade</div>
+              {/* Card Header */}
+              <div className="masonry-card-header">
+                <div className="card-header-left">
+                  <span className="card-icon" style={{ color: section.color }}>
+                    {section.icon}
+                  </span>
+                  <div>
+                    <h3 className="card-section-title">{section.shortName}</h3>
+                    <p className="card-section-subtitle">
+                      {section.title.includes('ROLE-SPECIFIC')
+                        ? `${primaryRole} Mastery Path`
+                        : section.title}
+                    </p>
                   </div>
-                )}
+                </div>
+                <span className="card-number-badge" style={{ background: section.color }}>
+                  {index + 1}
+                </span>
               </div>
 
-              {/* Metrics Grid */}
-              {metrics.length > 0 && (
-                <div className="metrics-grid">
-                  {metrics.map((metric, i) => (
-                    <div key={i} className="metric-card">
-                      <div className="metric-value">{metric.value}</div>
-                      <div className="metric-label">Key Stat</div>
-                    </div>
-                  ))}
-                </div>
-              )}
+              {/* Card Body */}
+              <div className="masonry-card-body">
 
               {/* Benchmarks Progress Bars */}
               {hasBenchmarks && benchmarks.length > 0 && (
@@ -618,84 +607,38 @@ const EnhancedInsightsPanel = ({ insights }) => {
                 </div>
               )}
 
-              {/* Full Content Accordion */}
-              <div className="full-content-section">
-                <details className="content-accordion">
-                  <summary className="accordion-trigger">
-                    <span>View Full Analysis</span>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <polyline points="6 9 12 15 18 9"/>
-                    </svg>
-                  </summary>
-                  <div className="accordion-content">
-                    {section.content.split('\n').map((line, i) => {
-                      const trimmed = line.trim();
-                      if (!trimmed) return null;
-                      
-                      if (trimmed.startsWith('-') || trimmed.startsWith('•')) {
-                        return (
-                          <div key={i} className="content-bullet">
-                            <span className="bullet-marker">▸</span>
-                            <span>{trimmed.substring(1).trim()}</span>
-                          </div>
-                        );
-                      }
-                      
-                      if (/^\d+\./.test(trimmed) || trimmed === trimmed.toUpperCase()) {
-                        return (
-                          <div key={i} className="content-heading">
-                            {trimmed}
-                          </div>
-                        );
-                      }
-                      
+              {/* Fallback: Show raw content if no special visualizations */}
+              {!hasBenchmarks && !isChampionPool && !isPractice && !isRoadmap && actionItems.length === 0 && (
+                <div className="content-text-section">
+                  {section.content.split('\n').map((line, i) => {
+                    const trimmed = line.trim();
+                    if (!trimmed) return null;
+
+                    if (trimmed.startsWith('-') || trimmed.startsWith('•')) {
                       return (
-                        <p key={i} className="content-paragraph">
-                          {trimmed}
-                        </p>
+                        <div key={i} className="content-bullet">
+                          <span className="bullet-marker">▸</span>
+                          <span>{trimmed.substring(1).trim()}</span>
+                        </div>
                       );
-                    })}
-                  </div>
-                </details>
-              </div>
+                    }
 
-              {/* Progress Indicator */}
-              <div className="section-progress">
-                <div className="progress-bar">
-                  <div 
-                    className="progress-fill" 
-                    style={{ width: `${((index + 1) / sections.length) * 100}%` }}
-                  />
-                </div>
-                <div className="progress-label">
-                  {index + 1} / {sections.length} sections complete
-                </div>
-              </div>
+                    if (/^\d+\./.test(trimmed) || trimmed === trimmed.toUpperCase()) {
+                      return (
+                        <div key={i} className="content-heading">
+                          {trimmed}
+                        </div>
+                      );
+                    }
 
-              {/* Navigation Buttons */}
-              <div className="section-nav-buttons">
-                {index > 0 && (
-                  <button 
-                    className="nav-btn prev-btn"
-                    onClick={() => setActiveSection(index - 1)}
-                  >
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <polyline points="15 18 9 12 15 6"/>
-                    </svg>
-                    Previous
-                  </button>
-                )}
-                {index < sections.length - 1 && (
-                  <button 
-                    className="nav-btn next-btn"
-                    onClick={() => setActiveSection(index + 1)}
-                  >
-                    Next
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <polyline points="9 18 15 12 9 6"/>
-                    </svg>
-                  </button>
-                )}
+                    return (
+                      <p key={i} className="content-paragraph">
+                        {trimmed}
+                      </p>
+                    );
+                  })}
+                </div>
+              )}
               </div>
             </div>
           );

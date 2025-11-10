@@ -78,11 +78,9 @@ const RoleDistribution = ({ rolesPlayed }) => {
       .attr('fill', d => d.data.color)
       .attr('stroke', '#1a1a2e')
       .attr('stroke-width', 2)
-      .style('opacity', 0)
+      .style('opacity', 0.9)
       .style('filter', d => `drop-shadow(0 0 6px ${d.data.color}30)`)
       .style('cursor', 'pointer')
-      .style('transform', 'scale(0)')
-      .style('transform-origin', 'center')
       .on('mouseover', function(event, d) {
         d3.select(this)
           .transition()
@@ -112,15 +110,6 @@ const RoleDistribution = ({ rolesPlayed }) => {
         tooltip.style('opacity', 0);
       });
 
-    // Animate pie chart entrance with scale and fade
-    paths
-      .transition()
-      .duration(800)
-      .delay((d, i) => i * 150)
-      .ease(d3.easeCubicOut)
-      .style('opacity', 0.9)
-      .style('transform', 'scale(1)');
-
     // Add percentage labels on slices
     slices.append('text')
       .attr('transform', d => {
@@ -134,15 +123,10 @@ const RoleDistribution = ({ rolesPlayed }) => {
       .style('font-weight', '700')
       .style('pointer-events', 'none')
       .style('text-shadow', '0 0 4px rgba(0,0,0,0.8)')
-      .style('opacity', 0)
       .text(d => {
         const percentage = (d.data.games / total) * 100;
         return percentage > 5 ? `${percentage.toFixed(0)}%` : '';
-      })
-      .transition()
-      .delay(1000)
-      .duration(500)
-      .style('opacity', 1);
+      });
 
     // Center text showing total games
     const centerText = g.append('g')

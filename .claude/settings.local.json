@@ -6,7 +6,9 @@
       "WebSearch",
       "Bash(tree:*)",
       "Bash(npm run build:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(find:*)",
+      "Bash(dir:*)"
     ],
     "deny": [],
     "ask": []
