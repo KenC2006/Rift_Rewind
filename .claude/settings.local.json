@@ -8,7 +8,9 @@
       "Bash(npm run build:*)",
       "Bash(cat:*)",
       "Bash(find:*)",
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "Bash(del test_bedrock.py test_riot_api.py)",
+      "Bash(del frontendsrcApp.test.js)"
     ],
     "deny": [],
     "ask": []
