@@ -125,6 +125,22 @@
 }
 
 /* Responsive */
+@media (max-width: 1200px) {
+  .role-distribution svg {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .role-legend {
+    gap: 14px;
+  }
+
+  .role-legend .legend-item {
+    font-size: 0.8rem;
+    padding: 6px 14px;
+  }
+}
+
 @media (max-width: 768px) {
   .role-distribution {
     padding: 16px;
@@ -132,6 +148,11 @@
 
   .role-legend {
     gap: 12px;
+  }
+
+  .role-legend .legend-item {
+    font-size: 0.75rem;
+    padding: 6px 12px;
   }
 
   .role-distribution svg {

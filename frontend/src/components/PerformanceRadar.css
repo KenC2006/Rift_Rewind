@@ -134,18 +134,43 @@
 }
 
 /* Responsive */
+@media (max-width: 1200px) {
+  .performance-radar svg {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .chart-title {
+    font-size: 1.5rem;
+  }
+
+  .chart-legend {
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+}
+
 @media (max-width: 768px) {
   .performance-radar {
     padding: 16px;
   }
 
   .chart-title {
-    font-size: 18px;
+    font-size: 1.25rem;
   }
 
   .performance-radar svg {
     max-width: 100%;
     height: auto;
+  }
+
+  .chart-legend {
+    gap: 12px;
+  }
+
+  .legend-item {
+    font-size: 0.75rem;
+    padding: 6px 12px;
   }
 }
 

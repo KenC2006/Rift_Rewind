@@ -116,22 +116,37 @@
 }
 
 /* Responsive */
+@media (max-width: 1200px) {
+  .kda-scatter svg {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .kda-scatter .chart-title {
+    font-size: 1.5rem;
+  }
+
+  .kda-scatter .chart-subtitle {
+    font-size: 0.75rem;
+  }
+}
+
 @media (max-width: 768px) {
   .kda-scatter {
     padding: 16px;
     overflow-x: auto;
   }
 
-  .chart-title {
-    font-size: 18px;
+  .kda-scatter .chart-title {
+    font-size: 1.25rem;
   }
 
-  .chart-subtitle {
-    font-size: 11px;
+  .kda-scatter .chart-subtitle {
+    font-size: 0.7rem;
   }
 
   .legend-note {
-    font-size: 11px;
+    font-size: 0.7rem;
   }
 }
 
