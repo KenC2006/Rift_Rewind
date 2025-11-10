@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './EnhancedInsightsPanel.css';
 
 const EnhancedInsightsPanel = ({ insights, stats, player }) => {
-  const [featuredSection, setFeaturedSection] = useState(0);
   const primaryRole = stats?.primary_role || 'MIDDLE';
 
   // Parse insights into sections
@@ -107,20 +106,6 @@ const EnhancedInsightsPanel = ({ insights, stats, player }) => {
 
   const sections = parseSections(insights);
 
-  // Extract visual metrics from text
-  const extractMetrics = (content) => {
-    const metrics = [];
-    const percentagePattern = /(\d+\.?\d*%)/g;
-
-    let match;
-    while ((match = percentagePattern.exec(content)) !== null) {
-      metrics.push({ value: match[1], type: 'percentage' });
-      if (metrics.length >= 4) break;
-    }
-    
-    return metrics;
-  };
-
   // Extract key action items
   const extractActionItems = (content) => {
     const lines = content.split('\n');
@@ -137,21 +122,6 @@ const EnhancedInsightsPanel = ({ insights, stats, player }) => {
     });
     
     return items;
-  };
-
-  // Extract rating/score if present
-  const extractRating = (content) => {
-    const ratingMatch = content.match(/([A-F][+-]?)\s*(tier|grade|rating)/i);
-    if (ratingMatch) return ratingMatch[1];
-    
-    const emojiMatch = content.match(/([✓✗⚠️])/);
-    if (emojiMatch) {
-      if (emojiMatch[1] === '✓') return 'A';
-      if (emojiMatch[1] === '⚠️') return 'C';
-      if (emojiMatch[1] === '✗') return 'F';
-    }
-    
-    return null;
   };
 
   // Extract champion tiers (S/B/C)

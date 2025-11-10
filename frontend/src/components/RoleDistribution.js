@@ -73,7 +73,7 @@ const RoleDistribution = ({ rolesPlayed }) => {
       .append('g')
       .attr('class', 'slice');
 
-    const paths = slices.append('path')
+    slices.append('path')
       .attr('d', arc)
       .attr('fill', d => d.data.color)
       .attr('stroke', '#1a1a2e')
