@@ -12,6 +12,7 @@ import StaggeredMenu from './components/StaggeredMenu';
 import Home from './pages/Home';
 import Stats from './pages/Stats';
 import Climb from './pages/Climb';
+import NotFound from './pages/NotFound';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -55,6 +56,7 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/stats" element={<Stats />} />
               <Route path="/climb" element={<Climb />} />
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </div>
 
